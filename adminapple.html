@@ -5,50 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Application with Army Reference</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap');
+
         body {
-            font-family: 'SolaimanLipi', 'Bangla', Arial, sans-serif;
+            font-family: 'Tiro Bangla', 'SolaimanLipi', Arial, sans-serif;
             margin: 0;
-            padding: 40px;
+            padding: 20px;
             background-color: #f0f0f0;
-            line-height: 1.6;
+            line-height: 1.5; /* লাইন হাইট সামান্য কমানো হয়েছে */
         }
         .container {
             width: 210mm;
-            min-height: 297mm;
-            padding: 25mm;
+            /* হাইট ফিক্সড না রেখে অটো রাখা হয়েছে যাতে কন্টেন্ট অনুযায়ী জায়গা নেয় */
+            min-height: 297mm; 
+            padding: 20mm; /* প্যাডিং ২৫ থেকে কমিয়ে ২০ করা হয়েছে */
             margin: 0 auto;
             background-color: white;
             box-sizing: border-box;
+            position: relative;
         }
         .header { margin-bottom: 20px; }
         .subject {
             font-weight: bold;
-            margin: 20px 0;
+            margin: 15px 0; /* গ্যাপ কমানো হয়েছে */
             text-decoration: underline;
         }
-        .content { text-align: justify; margin-bottom: 30px; }
-        .footer { margin-top: 50px; }
+        .content { text-align: justify; margin-bottom: 20px; }
+        .footer { margin-top: 40px; }
         .signature-line {
             border-top: 1px dashed #000;
             width: 200px;
             margin-bottom: 5px;
         }
-        .ref-box {
-            margin-top: 15px;
-            padding: 10px;
-            border: 1px solid #000;
-            background-color: #f9f9f9;
-            font-weight: bold;
-        }
+
+        /* প্রিন্ট বা পিডিএফ সেভ করার জন্য বিশেষ সেটিংস */
         @media print {
-            body { background-color: white; padding: 0; }
-            .container { margin: 0; width: 100%; }
-            button { display: none; }
+            @page {
+                size: A4;
+                margin: 0; /* ব্রাউজারের ডিফল্ট মার্জিন বন্ধ করা */
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                width: 100%;
+                min-height: auto; /* হাইট অটো করা */
+                margin: 0;
+                padding: 20mm; /* প্রিন্টের সময় সুন্দর মার্জিন থাকবে */
+                box-shadow: none;
+            }
+            button { display: none; } /* বাটিন হাইড থাকবে */
+        }
+
+        /* বাটনের স্টাইল */
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            font-family: inherit;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+        .download-btn:hover {
+            background: #1a252f;
         }
     </style>
 </head>
 <body>
-    <button onclick="window.print()" style="position:fixed;top:10px;right:10px;padding:10px;background:blue;color:white;">Print PDF</button>
+    <button onclick="window.print()" class="download-btn">⬇ PDF ডাউনলোড করুন</button>
 
     <div class="container">
         <div class="header">
