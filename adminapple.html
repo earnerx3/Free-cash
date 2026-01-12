@@ -3,117 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application_Nahid_Islam_Passport</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Noto+Serif+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <title>পাসপোর্ট সংশোধনী আবেদন</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap');
+
         body {
-            font-family: 'Tiro Bangla', 'Noto Serif Bengali', Arial, sans-serif;
-            background-color: #525659;
+            background-color: #e0e0e0;
+            font-family: 'Noto Sans Bengali', sans-serif;
             margin: 0;
             padding: 20px;
-            color: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .eng-num {
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: bold;
-            font-size: 1.1em;
-            letter-spacing: 0.5px;
+        /* A4 Page Styling */
+        .page {
+            background-color: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 25.4mm; /* 1 inch margin */
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            position: relative;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #000;
         }
 
-        .paper {
-            background: white;
-            width: 210mm; 
-            min-height: 297mm;
-            padding: 20mm 25mm; /* প্যাডিং সামান্য কমানো হয়েছে */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            position: relative;
-            box-sizing: border-box;
+        /* Content Styling */
+        .date, .recipient, .subject, .body-text, .signature {
             margin-bottom: 20px;
         }
 
-        /* ফন্ট সাইজ এবং লাইন হাইট এডজাস্ট করা হয়েছে যাতে এক পেজে আটে */
-        p { 
-            margin-bottom: 12px; 
-            line-height: 1.5; 
-            font-size: 16px; 
-            margin-top: 0;
-        }
-        
-        .header { margin-bottom: 30px; line-height: 1.4; }
-        
-        .subject { 
-            font-weight: bold; 
-            margin: 20px 0; 
-            text-decoration: underline; 
-            line-height: 1.5;
-            font-size: 17px;
-        }
-        
-        .body-content { text-align: justify; }
-        
-        strong { font-weight: 700; }
-
-        .footer { margin-top: 40px; }
-        
-        .signature-area {
+        .recipient {
             margin-top: 40px;
-            width: 200px;
-            border-top: 1px dashed #000;
-            padding-top: 5px;
-            text-align: center;
-            font-size: 15px;
-            color: #444;
         }
 
+        .subject {
+            font-weight: 700;
+            text-decoration: underline;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .body-text {
+            text-align: justify;
+            margin-bottom: 50px;
+        }
+
+        .signature {
+            margin-top: 60px;
+        }
+
+        .signature p {
+            margin: 5px 0;
+        }
+
+        .bold {
+            font-weight: 700;
+        }
+
+        /* Button Styling (Hidden in Print) */
         .btn-container {
             margin-bottom: 20px;
-            width: 100%;
-            text-align: center;
         }
+        
         .print-btn {
-            background-color: #007bff;
+            background-color: #28a745;
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 18px;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            border-radius: 8px;
-            font-family: sans-serif;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: background 0.3s;
-        }
-        .print-btn:hover { background-color: #0056b3; }
-
-        @media screen and (max-width: 800px) {
-            .paper { width: 100%; min-height: auto; padding: 20px; }
-            body { padding: 10px; background-color: #e9ecef; }
+            border-radius: 5px;
+            font-family: 'Noto Sans Bengali', sans-serif;
         }
 
-        /* প্রিন্ট ফিক্স */
+        .print-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Print Specific Styles */
         @media print {
-            @page {
-                size: A4;
-                margin: 0; /* ব্রাউজারের ডিফল্ট মার্জিন রিমুভ */
-            }
-            body { 
-                background: none; 
-                margin: 0; 
+            body {
+                background-color: white;
+                margin: 0;
                 padding: 0;
             }
-            .btn-container { display: none !important; }
-            .paper { 
-                width: 210mm; 
-                height: 297mm; /* হাইট ফিক্সড */
-                margin: 0; 
-                box-shadow: none; 
-                padding: 20mm 25mm !important; /* প্রিন্টের সময় নিরাপদ মার্জিন */
-                border: none;
-                page-break-after: avoid;
+            .page {
+                box-shadow: none;
+                width: 100%;
+                height: auto;
+                padding: 25.4mm;
+                margin: 0;
+            }
+            .btn-container {
+                display: none;
             }
         }
     </style>
@@ -121,17 +107,15 @@
 <body>
 
     <div class="btn-container">
-        <button onclick="document.title='Application_Nahid_Islam'; window.print();" class="print-btn">
-            🖨️ পিডিএফ সেভ করুন (এক পেজ)
-        </button>
-        <div style="margin-top: 10px; color: white; font-size: 14px;">
-            (সেভ করার সময় "Margins" অপশন থেকে <strong>"Default"</strong> অথবা <strong>"None"</strong> সিলেক্ট করুন)
-        </div>
+        <button class="print-btn" onclick="window.print()">🖨️ PDF ডাউনলোড / প্রিন্ট করুন</button>
     </div>
 
-    <div class="paper">
-        <div class="header">
-            তারিখ: <span class="eng-num">12/01/2026</span><br><br>
+    <div class="page">
+        <div class="date">
+            ১২ জানুয়ারি ২০২৬
+        </div>
+
+        <div class="recipient">
             বরাবর,<br>
             উপ-পরিচালক,<br>
             আঞ্চলিক পাসপোর্ট অফিস,<br>
@@ -139,34 +123,21 @@
         </div>
 
         <div class="subject">
-            বিষয়: অনলাইন আবেদনে যুক্ত জন্ম নিবন্ধন তথ্য বাদ দিয়ে শুধুমাত্র জাতীয় পরিচয়পত্র (NID) দিয়ে পাসপোর্ট করার আবেদন।
+            বিষয়: জন্ম নিবন্ধন নম্বর বাদ দিয়ে এনআইডি (NID) দিয়ে পাসপোর্ট করার আবেদন।
         </div>
 
-        <div class="body-content">
-            <p>জনাব,</p>
-            <p>
-                বিনীত নিবেদন এই যে, আমি <strong>নাহিদুল ইসলাম</strong>, পিতা: <strong>মো: মিলন মিয়া</strong>। আমি ১০ বছর মেয়াদী ই-পাসপোর্টের জন্য আবেদন করেছি। আমার অনলাইন আবেদন আইডি (OID): <span class="eng-num">1031783821</span>।
-            </p>
-            <p>
-                আবেদন করার সময় ভুলে এনআইডি (NID) এর পাশাপাশি জন্ম নিবন্ধন নম্বরটিও যুক্ত হয়ে গিয়েছিল। আমি চাচ্ছি আমার পাসপোর্টটি জন্ম নিবন্ধন ছাড়া, শুধুমাত্র এনআইডি (NID) কার্ড দিয়ে করতে। আমার এনআইডি নম্বর: <span class="eng-num">6931395161</span>।
-            </p>
-            <p>
-                অতএব, মহোদয়ের নিকট বিনীত প্রার্থনা, আমার আবেদন থেকে জন্ম নিবন্ধন তথ্যটি বাদ দিয়ে, শুধুমাত্র <strong>জাতীয় পরিচয়পত্র (NID)</strong> এর মাধ্যমে আমার পাসপোর্টটি প্রসেস করার প্রয়োজনীয় ব্যবস্থা গ্রহণ করতে মর্জি হয়।
-            </p>
-            <p>
-                উল্লেখ্য, আমার পিতা বাংলাদেশ সেনাবাহিনীর একজন সদস্য। বিষয়টি সদয় বিবেচনার জন্য অনুরোধ করছি।
-            </p>
+        <div class="body-text">
+            জনাব,<br>
+            আমি আপনার অফিসের একজন পাসপোর্ট প্রার্থী। অনলাইনে আবেদনের সময় আমি এনআইডি ও জন্ম নিবন্ধন—দুইটার তথ্যই দিয়েছিলাম।
+            <br><br>
+            কিন্তু এখন আমি শুধু <span class="bold">এনআইডি (NID)</span> দিয়ে পাসপোর্ট করতে চাই। তাই আমার আবেদন থেকে জন্ম নিবন্ধন নম্বরটি বাদ দিয়ে, এনআইডি অনুযায়ী পাসপোর্ট প্রসেস করার অনুরোধ করছি।
         </div>
 
-        <div class="footer">
+        <div class="signature">
             বিনীত,<br><br>
-            <div class="signature-area">
-                স্বাক্ষর
-            </div>
-            <br>
-            <strong>নাম:</strong> নাহিদুল ইসলাম<br>
-            <strong>মোবাইল:</strong> <span class="eng-num">01319316862</span><br>
-            <strong>পিতার নাম:</strong> মো: মিলন মিয়া (বাংলাদেশ সেনাবাহিনী)
+            নাম: <span class="bold">নাহিদুল ইসলাম (NAHIDUL ISLAM)</span><br>
+            OID: <span class="bold">OID1031783821</span><br>
+            মোবাইল: <span class="bold">+880 1319-316862</span>
         </div>
     </div>
 
