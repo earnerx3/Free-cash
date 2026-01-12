@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Tiro Bangla', 'Noto Serif Bengali', Arial, sans-serif;
-            background-color: #525659; /* ডার্ক ব্যাকগ্রাউন্ড যাতে কাগজটা ফুটে থাকে */
+            background-color: #525659;
             margin: 0;
             padding: 20px;
             color: #000;
@@ -17,7 +17,6 @@
             align-items: center;
         }
 
-        /* ইংরেজি সংখ্যার জন্য ফন্ট */
         .eng-num {
             font-family: 'Times New Roman', Times, serif;
             font-weight: bold;
@@ -25,49 +24,51 @@
             letter-spacing: 0.5px;
         }
 
-        /* কাগজের সাইজ এবং ডিজাইন */
         .paper {
             background: white;
-            width: 210mm; /* A4 Width */
-            min-height: 297mm; /* A4 Height */
-            padding: 25mm 25mm; /* স্ট্যান্ডার্ড মার্জিন */
+            width: 210mm; 
+            min-height: 297mm;
+            padding: 20mm 25mm; /* প্যাডিং সামান্য কমানো হয়েছে */
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             position: relative;
             box-sizing: border-box;
             margin-bottom: 20px;
         }
 
-        p { margin-bottom: 15px; line-height: 1.8; font-size: 17px; }
-        .header { margin-bottom: 35px; }
+        /* ফন্ট সাইজ এবং লাইন হাইট এডজাস্ট করা হয়েছে যাতে এক পেজে আটে */
+        p { 
+            margin-bottom: 12px; 
+            line-height: 1.5; 
+            font-size: 16px; 
+            margin-top: 0;
+        }
+        
+        .header { margin-bottom: 30px; line-height: 1.4; }
         
         .subject { 
             font-weight: bold; 
-            margin: 25px 0; 
+            margin: 20px 0; 
             text-decoration: underline; 
-            line-height: 1.6;
-            font-size: 18px;
+            line-height: 1.5;
+            font-size: 17px;
         }
         
         .body-content { text-align: justify; }
         
-        /* বোল্ড টেক্সট হাইলাইট করার জন্য */
-        strong {
-            font-weight: 700;
-        }
+        strong { font-weight: 700; }
 
-        .footer { margin-top: 60px; }
+        .footer { margin-top: 40px; }
         
         .signature-area {
-            margin-top: 50px;
+            margin-top: 40px;
             width: 200px;
             border-top: 1px dashed #000;
-            padding-top: 8px;
+            padding-top: 5px;
             text-align: center;
-            font-size: 16px;
+            font-size: 15px;
             color: #444;
         }
 
-        /* বাটন ডিজাইন */
         .btn-container {
             margin-bottom: 20px;
             width: 100%;
@@ -86,36 +87,33 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: background 0.3s;
         }
-        .print-btn:hover {
-            background-color: #0056b3;
-        }
+        .print-btn:hover { background-color: #0056b3; }
 
-        /* মোবাইলের জন্য রেস্পনসিভ */
         @media screen and (max-width: 800px) {
             .paper { width: 100%; min-height: auto; padding: 20px; }
             body { padding: 10px; background-color: #e9ecef; }
         }
 
-        /* প্রিন্ট করার সময় বা PDF সেভ করার সময় যা ঘটবে */
+        /* প্রিন্ট ফিক্স */
         @media print {
+            @page {
+                size: A4;
+                margin: 0; /* ব্রাউজারের ডিফল্ট মার্জিন রিমুভ */
+            }
             body { 
                 background: none; 
-                padding: 0; 
-                margin: 0;
+                margin: 0; 
+                padding: 0;
             }
-            .btn-container { 
-                display: none !important; /* বাটন প্রিন্টে আসবে না */
-            }
+            .btn-container { display: none !important; }
             .paper { 
-                width: 100%; 
+                width: 210mm; 
+                height: 297mm; /* হাইট ফিক্সড */
                 margin: 0; 
                 box-shadow: none; 
-                padding: 25mm !important; 
+                padding: 20mm 25mm !important; /* প্রিন্টের সময় নিরাপদ মার্জিন */
                 border: none;
-            }
-            @page { 
-                margin: 0; 
-                size: A4; 
+                page-break-after: avoid;
             }
         }
     </style>
@@ -124,10 +122,10 @@
 
     <div class="btn-container">
         <button onclick="document.title='Application_Nahid_Islam'; window.print();" class="print-btn">
-            🖨️ পিডিএফ সেভ/প্রিন্ট করুন
+            🖨️ পিডিএফ সেভ করুন (এক পেজ)
         </button>
         <div style="margin-top: 10px; color: white; font-size: 14px;">
-            (বাটনে ক্লিক করে "Destination" থেকে "Save as PDF" সিলেক্ট করুন)
+            (সেভ করার সময় "Margins" অপশন থেকে <strong>"Default"</strong> অথবা <strong>"None"</strong> সিলেক্ট করুন)
         </div>
     </div>
 
