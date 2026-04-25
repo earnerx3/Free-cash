@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Free Cash 💰</title>
     
-    <!-- External SDKs -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
     
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -27,6 +25,7 @@
             
             --neon-green: #00e676;
             --neon-green-glow: rgba(0, 230, 118, 0.4);
+            --neon-blue: #00d2ff;
             
             --text-white: #ffffff;
             --text-lavender: #E6E6FA;
@@ -92,6 +91,20 @@
             text-transform: uppercase; letter-spacing: 0.8px; font-weight: 800;
         }
 
+        /* Energy Bar (New) */
+        .energy-container { display: flex; align-items: center; gap: 5px; margin-top: 3px; }
+        .energy-icon { font-size: 12px; color: var(--neon-blue); }
+        .energy-bar-bg { 
+            width: 60px; height: 6px; 
+            background: rgba(0,0,0,0.5); border-radius: 10px; 
+            overflow: hidden; border: 1px solid rgba(0,210,255,0.3); 
+        }
+        .energy-bar-fill { 
+            height: 100%; background: var(--neon-blue); 
+            width: 100%; transition: width 0.3s ease; 
+            box-shadow: 0 0 8px var(--neon-blue); 
+        }
+
         .balance-pill {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--gold-primary);
@@ -100,7 +113,7 @@
             text-align: right;
             box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1);
         }
-        .balance-amount { font-size: 15px; font-weight: 700; color: var(--gold-primary); }
+        .balance-amount { font-size: 15px; font-weight: 700; color: var(--gold-primary); transition: all 0.3s ease; }
         .balance-label { font-size: 9px; color: var(--text-lavender); }
 
         /* --- Layout --- */
@@ -156,7 +169,19 @@
             color: var(--text-white);
             border: 1px solid var(--glass-border);
         }
-        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn:active:not(:disabled) { transform: scale(0.97); }
+
+        /* --- Floating Animation (Optimistic UI Effect) --- */
+        .floating-text {
+            position: fixed; color: var(--neon-green); font-weight: 800; font-size: 20px;
+            pointer-events: none; z-index: 9999; animation: floatUp 1s ease-out forwards;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+        @keyframes floatUp { 
+            0% { opacity: 1; transform: translateY(0) scale(1); } 
+            100% { opacity: 0; transform: translateY(-50px) scale(1.5); } 
+        }
 
         /* --- Daily Check-in --- */
         .checkin-grid { display: flex; justify-content: space-between; margin-top: 10px; }
@@ -198,7 +223,20 @@
         }
         .task-meta h4 { font-size: 13px; font-weight: 600; color: var(--text-white); }
         .task-meta span { font-size: 11px; color: var(--gold-primary); font-weight: 700; }
-        .btn-sm { padding: 6px 14px; font-size: 11px; border-radius: 20px; font-weight: 700; }
+        .btn-sm { padding: 6px 14px; font-size: 11px; border-radius: 20px; font-weight: 700; border: none; cursor: pointer; }
+
+        /* --- Milestone Progress (New) --- */
+        .milestone-box { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+        .milestone-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+        .milestone-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .milestone-bar-fill { height: 100%; background: var(--gold-gradient); width: 0%; transition: 0.5s; }
+
+        /* --- P2P Card (New) --- */
+        .p2p-card {
+            background: linear-gradient(45deg, #1a0625, #001f3f); border: 1px solid var(--neon-blue);
+            border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 15px; position: relative; overflow: hidden;
+        }
+        .p2p-badge { position: absolute; top: 10px; right: -25px; background: var(--neon-blue); color: #000; font-size: 9px; font-weight: 800; padding: 4px 30px; transform: rotate(45deg); }
 
         /* --- Leaderboard (Medal Style) --- */
         .rank-row {
@@ -275,7 +313,7 @@
         
         .nav-btn {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #888; transition: 0.3s; position: relative; width: 50px;
+            color: #888; transition: 0.3s; position: relative; width: 50px; cursor: pointer;
         }
         .nav-btn svg { width: 22px; height: 22px; margin-bottom: 4px; }
         .nav-btn span { font-size: 9px; font-weight: 600; }
@@ -301,13 +339,15 @@
 </head>
 <body>
 
-    <!-- Header -->
     <div class="royal-header">
         <div class="user-profile">
             <img id="headerAvatar" src="https://placehold.co/100x100/240b36/FFD700?text=U" class="user-avatar">
             <div class="user-details">
                 <h3 id="headerName">Loading...</h3>
-                <span id="headerLevel">NOVICE</span>
+                <div class="energy-container">
+                    <span class="energy-icon">⚡</span>
+                    <div class="energy-bar-bg"><div class="energy-bar-fill" id="headerEnergyBar"></div></div>
+                </div>
             </div>
         </div>
         <div class="balance-pill">
@@ -318,7 +358,6 @@
 
     <div class="container">
 
-        <!-- HOME PAGE -->
         <div id="homePage" class="page active">
             <div class="glass-card">
                 <div class="card-header"><span class="card-icon">📅</span> <h2>Daily Rewards</h2></div>
@@ -340,8 +379,8 @@
                     <div class="stat-label">Total Earned</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-val" id="statsDailyAds">0/10</div>
-                    <div class="stat-label">Ads Watched</div>
+                    <div class="stat-val" id="statsEnergy">100/100</div>
+                    <div class="stat-label">Energy Left</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-val" id="statsRefers">0</div>
@@ -359,13 +398,12 @@
                     <h2 style="color:var(--gold-primary);">Start Mining Cash</h2>
                 </div>
                 <p style="text-align:center; font-size:12px; color:var(--text-lavender); margin-bottom:15px;">
-                    Watch premium ads & complete tasks to level up your rank.
+                    Watch premium ads & complete tasks. Costs ⚡Energy per task.
                 </p>
                 <button class="btn btn-gold" onclick="navigateToPage('adsPage')">Go to Arcade</button>
             </div>
         </div>
 
-        <!-- TASKS PAGE -->
         <div id="adsPage" class="page">
             <div class="glass-card">
                 <div class="card-header"><span class="card-icon">📺</span> <h2>Watch & Earn</h2></div>
@@ -375,7 +413,7 @@
                         <div class="task-icon">⚡</div>
                         <div class="task-meta">
                             <h4>Standard Ad</h4>
-                            <span>+<span id="adPointsStd">0</span> Pts</span>
+                            <span>+<span id="adPointsStd">0</span> Pts (Cost: 10⚡)</span>
                         </div>
                     </div>
                     <button class="btn-sm btn-gold" id="btnStandardAd">Watch</button>
@@ -386,7 +424,7 @@
                         <div class="task-icon" style="background:var(--gold-primary); color:black;">💎</div>
                         <div class="task-meta">
                             <h4 style="color:var(--gold-primary);">Premium Ad</h4>
-                            <span>+<span id="adPointsBonus">0</span> Pts</span>
+                            <span>+<span id="adPointsBonus">0</span> Pts (Cost: 15⚡)</span>
                         </div>
                     </div>
                     <button class="btn-sm btn-gold" id="btnBonusAd">Claim</button>
@@ -399,12 +437,11 @@
             </div>
         </div>
 
-        <!-- LEADERBOARD PAGE -->
         <div id="leaderboardPage" class="page">
             <div style="text-align:center; margin-bottom:20px;">
                 <div style="font-size:40px; margin-bottom:5px;">🏆</div>
                 <h2 style="color:var(--gold-primary);">Global Rankings</h2>
-                <p style="font-size:12px; color:var(--text-muted);">Top 50 Players</p>
+                <p style="font-size:12px; color:var(--neon-green);">Updates automatically</p>
             </div>
             
             <div id="leaderboardList" style="padding-bottom: 20px;">
@@ -412,10 +449,15 @@
             </div>
         </div>
 
-        <!-- WALLET PAGE -->
         <div id="withdrawPage" class="page">
             
-            <!-- Global Currency Switcher -->
+            <div class="p2p-card">
+                <div class="p2p-badge">SOON</div>
+                <div style="font-size:24px; margin-bottom:5px;">🤝</div>
+                <h3 style="color:var(--neon-blue); margin-bottom:5px;">P2P Trading Market</h3>
+                <p style="font-size:11px; color:var(--text-muted);">Buy and sell your points directly with other users securely.</p>
+            </div>
+
             <div class="currency-selector-container">
                 <select id="globalCurrencySelector" class="currency-select" onchange="updateCurrencyDisplay()">
                     <option value="USD" selected>🇺🇸 USD (Dollar)</option>
@@ -433,7 +475,7 @@
                     <div class="balance-lg-val" id="withdrawBalanceDisplay">0</div>
                     <div class="balance-lg-fiat" id="withdrawFiatDisplay">$0.00 USD</div>
                 </div>
-                <div style="font-size:11px; color:var(--text-muted);">Exchange Rate: 1000 Pts = $0.10 USD</div>
+                <div style="font-size:11px; color:var(--text-muted);" id="dynamicPriceText">Exchange Rate Loading...</div>
             </div>
 
             <div class="glass-card">
@@ -465,19 +507,23 @@
             </div>
         </div>
 
-        <!-- PROFILE PAGE -->
         <div id="profilePage" class="page">
             <div class="glass-card" style="text-align:center; padding-top:30px;">
                 <img id="profilePageAvatar" src="" class="user-avatar" style="width:80px; height:80px; margin-bottom:15px;">
                 <h2 id="profilePageName" style="margin-bottom:5px;">User</h2>
-                <span id="profilePageLevel" style="background:rgba(255,215,0,0.1); color:var(--gold-primary); padding:4px 12px; border-radius:12px; font-size:11px; font-weight:800; border:1px solid var(--gold-primary);">NOVICE</span>
             </div>
 
             <div class="glass-card">
-                <div class="card-header"><span class="card-icon">🤝</span> <h2>Referral Program</h2></div>
-                <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
-                    Earn <span id="referRateText" style="color:var(--neon-green);">10%</span> commission for every friend you invite.
+                <div class="card-header"><span class="card-icon">🎯</span> <h2>Referral Milestones</h2></div>
+                <p style="font-size:11px; color:var(--text-muted); margin-bottom:15px;">
+                    Invite friends and unlock massive bonus rewards!
                 </p>
+                <div id="milestoneList">
+                    </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header"><span class="card-icon">🤝</span> <h2>Your Invite Link</h2></div>
                 
                 <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-family:monospace; color:var(--gold-primary); word-break:break-all; font-size:12px; border:1px solid var(--glass-border); margin-bottom:12px;" id="referLinkBox">
                     Loading link...
@@ -497,7 +543,6 @@
 
     </div>
 
-    <!-- Floating Nav -->
     <div class="bottom-nav">
         <div class="nav-btn active" onclick="navigateToPage('homePage')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -521,7 +566,6 @@
         </div>
     </div>
 
-    <!-- Modals -->
     <div class="modal-overlay" id="customModal">
         <div class="modal-content" id="modalBox">
             <div style="font-size:40px; margin-bottom:10px;" id="modalIcon">🎉</div>
@@ -543,14 +587,13 @@
         const SHORT_NAME = "app"; 
         
         // *** GLOBAL CURRENCY RATES (Base: USD) ***
-        // Logic: 1000 Points = $0.10 USD (Base Rate)
         const CURRENCY_RATES = {
             'USD': { rate: 1, symbol: '$' },
-            'BDT': { rate: 120, symbol: '৳' }, // 1 USD = 120 BDT
-            'INR': { rate: 86, symbol: '₹' },  // 1 USD = 86 INR
-            'PKR': { rate: 278, symbol: '₨' }, // 1 USD = 278 PKR
-            'NGN': { rate: 1600, symbol: '₦' },// 1 USD = 1600 NGN
-            'EUR': { rate: 0.92, symbol: '€' } // 1 USD = 0.92 EUR
+            'BDT': { rate: 120, symbol: '৳' },
+            'INR': { rate: 86, symbol: '₹' },
+            'PKR': { rate: 278, symbol: '₨' },
+            'NGN': { rate: 1600, symbol: '₦' },
+            'EUR': { rate: 0.92, symbol: '€' }
         };
 
         const firebaseConfig = {
@@ -566,36 +609,83 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let currentUser = null;
+        // *** GLOBAL STATE (Optimistic UI & Energy) ***
+        let dbUser = null;
         let appConfig = null;
+        let localBalance = 0;
+        let localEnergy = 100;
+        let unsyncedPoints = 0;
+        let unsyncedEnergyUsed = 0;
+        const MAX_ENERGY = 100;
 
-        // --- Core Functions ---
-        function getLevel(points) {
-            if (points > 100000) return "DIAMOND";
-            if (points > 50000) return "PLATINUM";
-            if (points > 10000) return "GOLD";
-            return "NOVICE";
-        }
-
+        // --- Core Utils ---
         function formatNumber(num) {
             return num.toLocaleString();
         }
 
+        function showFloatingText(text, x, y) {
+            const el = document.createElement('div');
+            el.className = 'floating-text';
+            el.innerText = text;
+            el.style.left = (x - 20) + 'px';
+            el.style.top = (y - 20) + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        // *** BOT NOTIFICATION ***
+        async function notifyBot(userId, message) {
+            if(!appConfig || !appConfig.botToken) return;
+            const url = `https://api.telegram.org/bot${appConfig.botToken}/sendMessage`;
+            try {
+                await fetch(url, {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: userId, text: message, parse_mode: "HTML" })
+                });
+            } catch(e) { console.log("Bot notification failed"); }
+        }
+
+        // *** DATA SYNC (Optimistic to Server) ***
+        async function syncWithServer() {
+            if(!dbUser || (unsyncedPoints === 0 && unsyncedEnergyUsed === 0)) return;
+            
+            const pointsToSync = unsyncedPoints;
+            const energyToSync = unsyncedEnergyUsed;
+            
+            // Reset trackers to avoid double counting during the await
+            unsyncedPoints = 0; 
+            unsyncedEnergyUsed = 0;
+
+            try {
+                await db.collection('users').doc(dbUser.userId).update({
+                    balance: firebase.firestore.FieldValue.increment(pointsToSync),
+                    totalEarnings: firebase.firestore.FieldValue.increment(pointsToSync),
+                    energy: firebase.firestore.FieldValue.increment(-energyToSync)
+                });
+            } catch(e) {
+                // Restore if failed
+                unsyncedPoints += pointsToSync;
+                unsyncedEnergyUsed += energyToSync;
+            }
+        }
+        
+        // Sync every 30 seconds
+        setInterval(syncWithServer, 30000);
+        // Sync when user closes app
+        window.addEventListener('beforeunload', () => { syncWithServer(); });
+
         // *** CURRENCY LOGIC ***
         function updateCurrencyDisplay() {
-            if(!currentUser || !appConfig) return;
+            if(!dbUser || !appConfig) return;
             
             const selectedCurr = document.getElementById('globalCurrencySelector').value;
             const currencyData = CURRENCY_RATES[selectedCurr] || CURRENCY_RATES['USD'];
             
-            // Base Logic: appConfig.dollarExchangeRate usually implies Points per $1
-            // Defaulting to 10000 points = $1 if not set in config
             const pointsPerDollar = appConfig.dollarExchangeRate || 10000; 
-            
-            const balanceUSD = currentUser.balance / pointsPerDollar;
+            const balanceUSD = localBalance / pointsPerDollar;
             const convertedValue = balanceUSD * currencyData.rate;
             
-            // Update Fiat Display
             document.getElementById('withdrawFiatDisplay').innerText = 
                 `${currencyData.symbol}${convertedValue.toFixed(2)} ${selectedCurr}`;
         }
@@ -605,7 +695,7 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            if(pageId === 'leaderboardPage') loadLeaderboard();
+            if(pageId === 'leaderboardPage') loadLeaderboardCached();
 
             document.querySelectorAll('.nav-btn').forEach(item => {
                 item.classList.remove('active');
@@ -641,7 +731,7 @@
             if(doc.exists) {
                 appConfig = doc.data();
                 if(appConfig.monetagZoneId) loadMonetag(appConfig.monetagZoneId);
-                updateUI();
+                refreshUI();
             }
         }
 
@@ -666,80 +756,99 @@
             });
         }
 
-        function updateUI() {
-            if(!currentUser || !appConfig) return;
+        // --- UI REFRESH (Fast local updates) ---
+        function refreshUI() {
+            if(!dbUser || !appConfig) return;
             
-            const fullName = `${currentUser.first_name} ${currentUser.last_name || ''}`.trim();
-            const level = getLevel(currentUser.balance);
+            const fullName = `${dbUser.first_name} ${dbUser.last_name || ''}`.trim();
             
-            // Header
+            // Header & Energy
             document.getElementById('headerName').innerText = fullName.substring(0, 12);
-            document.getElementById('headerLevel').innerText = level;
-            document.getElementById('headerBalance').innerText = formatNumber(currentUser.balance);
-            document.getElementById('headerAvatar').src = currentUser.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
+            document.getElementById('headerBalance').innerText = formatNumber(localBalance);
+            document.getElementById('headerEnergyBar').style.width = `${(localEnergy/MAX_ENERGY)*100}%`;
+            document.getElementById('headerAvatar').src = dbUser.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
             
             // Profile
             document.getElementById('profilePageName').innerText = fullName;
-            document.getElementById('profilePageLevel').innerText = level;
-            document.getElementById('profilePageAvatar').src = currentUser.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
+            document.getElementById('profilePageAvatar').src = dbUser.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
 
             // Stats
-            document.getElementById('statsDailyAds').innerText = `${currentUser.dailyTasksCompleted || 0}/${appConfig.dailyTaskLimit || 10}`;
-            document.getElementById('statsTotalEarn').innerText = formatNumber(currentUser.totalEarnings || 0);
-            document.getElementById('statsRefers').innerText = currentUser.referredUsersCount || 0;
-            document.getElementById('statsTotalViews').innerText = currentUser.totalTasksCompleted || 0;
+            document.getElementById('statsEnergy').innerText = `${localEnergy}/${MAX_ENERGY}`;
+            document.getElementById('statsTotalEarn').innerText = formatNumber((dbUser.totalEarnings || 0) + unsyncedPoints);
+            document.getElementById('statsRefers').innerText = dbUser.referredUsersCount || 0;
+            document.getElementById('statsTotalViews').innerText = dbUser.totalTasksCompleted || 0;
 
-            // Ads
+            // Ads Points Display
             document.getElementById('adPointsStd').innerText = appConfig.standardAdPoints || 10;
             document.getElementById('adPointsBonus').innerText = appConfig.bonusAdPoints || 20;
             
             // Wallet Display
-            document.getElementById('withdrawBalanceDisplay').innerText = formatNumber(currentUser.balance);
-            updateCurrencyDisplay(); // Recalculate based on default USD
+            document.getElementById('withdrawBalanceDisplay').innerText = formatNumber(localBalance);
+            const rateUSD = appConfig.dollarExchangeRate || 10000;
+            document.getElementById('dynamicPriceText').innerText = `Exchange Rate: ${rateUSD} Pts = $1.00 USD`;
+            updateCurrencyDisplay(); 
 
             renderMethods();
             renderHistory();
             renderDynamicTasks();
             renderSupport();
+            renderMilestones();
             
-            const link = `https://t.me/${BOT_USERNAME}/${SHORT_NAME}?startapp=ref_${currentUser.userId}`;
+            const link = `https://t.me/${BOT_USERNAME}/${SHORT_NAME}?startapp=ref_${dbUser.userId}`;
             document.getElementById('referLinkBox').innerText = link;
-            document.getElementById('referRateText').innerText = (appConfig.referralBonus > 0) ? `${appConfig.referralBonus} Pts` : `${appConfig.referralPercentage || 10}%`;
         }
         
-        // --- Leaderboard ---
-        async function loadLeaderboard() {
+        // --- Leaderboard (Cached logic) ---
+        async function loadLeaderboardCached() {
             const list = document.getElementById('leaderboardList');
+            const cacheData = localStorage.getItem('lb_data');
+            const cacheTime = localStorage.getItem('lb_time');
+            const now = Date.now();
+
+            // Cache validation (24 hours = 86400000 ms)
+            if(cacheData && cacheTime && (now - cacheTime < 86400000)) {
+                renderLeaderboardHTML(JSON.parse(cacheData));
+                return;
+            }
+
             try {
                 const snap = await db.collection('users').orderBy('balance', 'desc').limit(50).get();
-                list.innerHTML = '';
+                let lbArray = [];
+                snap.forEach(doc => lbArray.push(doc.data()));
                 
-                let rank = 1;
-                snap.forEach(doc => {
-                    const u = doc.data();
-                    const isMe = u.userId === currentUser.userId;
-                    const name = u.first_name + (u.last_name ? ' '+u.last_name : '');
-                    const avatar = u.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
-                    const score = formatNumber(u.balance);
-                    
-                    const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
-                    
-                    list.innerHTML += `
-                    <div class="rank-row ${rankClass}">
-                        <div class="rank-idx">${rank}</div>
-                        <div class="rank-user">
-                            <img src="${avatar}">
-                            <div style="font-size:13px; font-weight:600; color:var(--text-white);">
-                                ${name} ${isMe ? '(You)' : ''}
-                            </div>
-                        </div>
-                        <div class="rank-score">${score}</div>
-                    </div>`;
-                    rank++;
-                });
+                localStorage.setItem('lb_data', JSON.stringify(lbArray));
+                localStorage.setItem('lb_time', now);
+                renderLeaderboardHTML(lbArray);
             } catch(e) {
                 list.innerHTML = '<div style="text-align:center;color:red;">Failed to load rankings</div>';
             }
+        }
+
+        function renderLeaderboardHTML(lbArray) {
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = '';
+            
+            lbArray.forEach((u, idx) => {
+                const rank = idx + 1;
+                const isMe = u.userId === dbUser.userId;
+                const name = u.first_name + (u.last_name ? ' '+u.last_name : '');
+                const avatar = u.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
+                const score = formatNumber(u.balance);
+                
+                const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+                
+                list.innerHTML += `
+                <div class="rank-row ${rankClass}">
+                    <div class="rank-idx">${rank}</div>
+                    <div class="rank-user">
+                        <img src="${avatar}">
+                        <div style="font-size:13px; font-weight:600; color:var(--text-white);">
+                            ${name} ${isMe ? '(You)' : ''}
+                        </div>
+                    </div>
+                    <div class="rank-score">${score}</div>
+                </div>`;
+            });
         }
 
         // --- Helper Lists ---
@@ -754,7 +863,7 @@
         async function renderHistory() {
             const list = document.getElementById('withdrawHistory');
             list.innerHTML = '';
-            const snap = await db.collection('withdrawals').where('userId', '==', currentUser.userId).orderBy('createdAt', 'desc').limit(5).get();
+            const snap = await db.collection('withdrawals').where('userId', '==', dbUser.userId).orderBy('createdAt', 'desc').limit(5).get();
             if(snap.empty) { list.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px;">No history yet.</div>'; return; }
             
             snap.forEach(doc => {
@@ -779,7 +888,7 @@
             div.innerHTML = '';
             appConfig.dynamicTasks?.forEach(task => {
                 const today = new Date().toDateString();
-                const isDone = (currentUser.completedTasks?.[task.id] === today) || (task.type === 'one-time' && currentUser.completedTasks?.[task.id] === 'completed');
+                const isDone = (dbUser.completedTasks?.[task.id] === today) || (task.type === 'one-time' && dbUser.completedTasks?.[task.id] === 'completed');
                 
                 div.innerHTML += `
                  <div class="task-item">
@@ -787,10 +896,10 @@
                          <div class="task-icon" style="background:#333; color:white;">🔗</div>
                          <div class="task-meta">
                              <h4>${task.name}</h4>
-                             <span>+${task.points} Pts</span>
+                             <span>+${task.points} Pts (Cost: 5⚡)</span>
                          </div>
                      </div>
-                     <button class="btn-sm btn-glass" onclick="doTask('${task.id}')" ${isDone ? 'disabled style="opacity:0.5"' : ''}>
+                     <button class="btn-sm btn-glass" onclick="doTask(event, '${task.id}')" ${isDone ? 'disabled style="opacity:0.5"' : ''}>
                         ${isDone ? 'Done' : 'Go'}
                      </button>
                  </div>`;
@@ -812,9 +921,75 @@
              });
         }
 
-        // --- Interactions ---
-        document.getElementById('btnStandardAd').onclick = async function() {
-            if(currentUser.dailyTasksCompleted >= appConfig.dailyTaskLimit) return showModal('Limit', 'Daily limit reached!', '🛑');
+        // --- Referral Milestones Logic ---
+        function renderMilestones() {
+            const div = document.getElementById('milestoneList');
+            div.innerHTML = '';
+            if(!appConfig.milestones) { div.innerHTML = '<p style="text-align:center; font-size:12px; color:var(--text-muted);">No active milestones</p>'; return; }
+            
+            const refs = dbUser.referredUsersCount || 0;
+            const claimed = dbUser.claimedMilestones || [];
+
+            appConfig.milestones.forEach(m => {
+                const isClaimed = claimed.includes(m.required);
+                const progress = Math.min(refs, m.required);
+                const percent = (progress / m.required) * 100;
+                
+                let actionBtn = `<button class="btn-sm btn-glass" disabled>Locked</button>`;
+                if(isClaimed) {
+                    actionBtn = `<button class="btn-sm btn-glass" style="color:var(--neon-green); border-color:var(--neon-green);" disabled>Claimed ✅</button>`;
+                } else if(progress >= m.required) {
+                    actionBtn = `<button class="btn-sm btn-gold" onclick="claimMilestone(${m.required}, ${m.reward})">Claim ${m.reward}</button>`;
+                }
+
+                div.innerHTML += `
+                <div class="milestone-box">
+                    <div class="milestone-header">
+                        <span>Invite ${m.required} Friends</span>
+                        <span>🎁 ${m.reward} Pts</span>
+                    </div>
+                    <div class="milestone-bar-bg"><div class="milestone-bar-fill" style="width:${percent}%"></div></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                        <span style="font-size:11px; color:var(--text-muted);">${progress}/${m.required} Joined</span>
+                        ${actionBtn}
+                    </div>
+                </div>`;
+            });
+        }
+
+        async function claimMilestone(requiredTarget, reward) {
+            await syncWithServer(); // Force sync first to be safe
+            const ref = db.collection('users').doc(dbUser.userId);
+            try {
+                await ref.update({
+                    balance: firebase.firestore.FieldValue.increment(reward),
+                    claimedMilestones: firebase.firestore.FieldValue.arrayUnion(requiredTarget)
+                });
+                showModal('Milestone Unlocked!', `Awesome! You received ${reward} Points.`, '🏆');
+                notifyBot(dbUser.userId, `🎉 <b>অভিনন্দন!</b>\nআপনি ${requiredTarget} টি রেফার টার্গেট পূরণ করেছেন এবং <b>${reward} পয়েন্ট</b> বোনাস পেয়েছেন!\n\nKeep sharing your link! 🚀`);
+            } catch(e) {
+                showModal('Error', 'Failed to claim.', '❌');
+            }
+        }
+
+        // --- Optimistic UI Applier ---
+        function applyOptimisticReward(points, energyCost, event) {
+            localEnergy -= energyCost;
+            localBalance += points;
+            unsyncedEnergyUsed += energyCost;
+            unsyncedPoints += points;
+            
+            if(event) {
+                showFloatingText(`+${points}`, event.clientX, event.clientY);
+            }
+            tg.HapticFeedback.impactOccurred('medium');
+            refreshUI();
+        }
+
+        // --- Interactions (Ads & Tasks) ---
+        document.getElementById('btnStandardAd').onclick = async function(event) {
+            const cost = 10;
+            if(localEnergy < cost) return showModal('Low Energy', `You need ${cost}⚡ to do this task.`, '⚡');
             
             const btn = this;
             btn.innerText = 'Watching...';
@@ -833,7 +1008,9 @@
                     return; 
                 }
 
-                await rewardUser(appConfig.standardAdPoints, true);
+                // Instant UI Update
+                applyOptimisticReward(appConfig.standardAdPoints || 10, cost, event);
+                
                 btn.innerText = 'Watch';
                 btn.disabled = false;
             } catch(e) {
@@ -844,83 +1021,74 @@
             }
         };
 
-        document.getElementById('btnBonusAd').onclick = async function() {
-            if(currentUser.dailyTasksCompleted >= appConfig.dailyTaskLimit) return showModal('Limit', 'Daily limit reached!', '🛑');
-             this.innerText = '...';
+        document.getElementById('btnBonusAd').onclick = async function(event) {
+            const cost = 15;
+            if(localEnergy < cost) return showModal('Low Energy', `You need ${cost}⚡ to do this task.`, '⚡');
+            
+            const btn = this;
+            btn.innerText = '...'; btn.disabled = true;
             try {
                 await showAd('pop');
-                await rewardUser(appConfig.bonusAdPoints, true);
+                applyOptimisticReward(appConfig.bonusAdPoints || 20, cost, event);
             } catch(e) {
                 showModal('Error', 'Bonus ad unavailable.', '❌');
             }
-             this.innerText = 'Claim';
+            btn.innerText = 'Claim'; btn.disabled = false;
         };
 
-        async function rewardUser(points, isAd = false) {
-             const ref = db.collection('users').doc(currentUser.userId);
-             await db.runTransaction(async (t) => {
-                 const doc = await t.get(ref);
-                 const data = doc.data();
-                 let update = {
-                     balance: data.balance + points,
-                     totalEarnings: data.totalEarnings + points
-                 };
-                 if(isAd) {
-                     update.dailyTasksCompleted = (data.dailyTasksCompleted || 0) + 1;
-                     update.totalTasksCompleted = (data.totalTasksCompleted || 0) + 1;
-                 }
-                 if(data.referredBy && appConfig.referralPercentage > 0) {
-                     const comm = Math.floor(points * (appConfig.referralPercentage / 100));
-                     if(comm > 0) {
-                         const refUser = db.collection('users').doc(data.referredBy);
-                         t.update(refUser, { 
-                             balance: firebase.firestore.FieldValue.increment(comm),
-                             referralEarnings: firebase.firestore.FieldValue.increment(comm)
-                         });
-                     }
-                 }
-                 t.update(ref, update);
-             });
-             showModal('Awesome!', `You earned +${points} Points`, '💰');
-        }
-
-        window.doTask = function(taskId) {
+        window.doTask = function(event, taskId) {
             const task = appConfig.dynamicTasks.find(t => t.id === taskId);
             if(!task) return;
+            
+            const cost = 5;
+            if(localEnergy < cost) return showModal('Low Energy', `You need ${cost}⚡ to do this task.`, '⚡');
+
             tg.openLink(task.link);
             showModal('Wait...', `Wait ${task.timer || 10} seconds to claim.`, '⏳');
+            
             setTimeout(async () => {
-                const ref = db.collection('users').doc(currentUser.userId);
+                applyOptimisticReward(task.points, cost, event);
+                
+                // Need immediate DB update for task status so it doesn't get repeated
+                const ref = db.collection('users').doc(dbUser.userId);
                 const today = new Date().toDateString();
                 await ref.update({
-                    balance: firebase.firestore.FieldValue.increment(task.points),
-                    [`completedTasks.${taskId}`]: task.type === 'one-time' ? 'completed' : today
+                    [`completedTasks.${taskId}`]: task.type === 'one-time' ? 'completed' : today,
+                    totalTasksCompleted: firebase.firestore.FieldValue.increment(1)
                 });
+                
                 showModal('Done', `Task Reward: ${task.points}`, '✅');
+                renderDynamicTasks(); // Re-disable button
             }, (task.timer || 10) * 1000);
         };
         
+        // --- Withdraw Submit ---
         document.getElementById('btnSubmitWithdraw').onclick = async function() {
+            await syncWithServer(); // Push optimistic points before checking balance
+            
             const amt = parseInt(document.getElementById('withdrawAmountInput').value);
             const addr = document.getElementById('withdrawAddress').value;
             const methodId = document.getElementById('withdrawMethod').value;
             
             if(!amt || !addr) return showModal('Error', 'Fill all fields', '⚠️');
-            if(amt > currentUser.balance) return showModal('Error', 'Insufficient Balance', '💸');
+            
+            // Re-fetch latest balance from DB to be ultra-safe
+            const doc = await db.collection('users').doc(dbUser.userId).get();
+            const realBalance = doc.data().balance;
+
+            if(amt > realBalance) return showModal('Error', 'Insufficient Balance', '💸');
             
             const method = appConfig.paymentMethods.find(m => m.id === methodId);
             if(amt < method.minAmount) return showModal('Error', `Min withdraw is ${method.minAmount}`, '📉');
 
             try {
                 await db.runTransaction(async (t) => {
-                     const ref = db.collection('users').doc(currentUser.userId);
-                     const doc = await t.get(ref);
-                     if(doc.data().balance < amt) throw "Low Balance";
-                     
+                     const ref = db.collection('users').doc(dbUser.userId);
                      t.update(ref, { balance: firebase.firestore.FieldValue.increment(-amt) });
+                     
                      const wRef = db.collection('withdrawals').doc();
                      t.set(wRef, {
-                         userId: currentUser.userId,
+                         userId: dbUser.userId,
                          amount: amt,
                          paymentAddress: addr,
                          paymentMethodName: method.name,
@@ -928,8 +1096,12 @@
                          createdAt: firebase.firestore.FieldValue.serverTimestamp()
                      });
                 });
+                
                 showModal('Processing', 'Withdrawal requested successfully!', '✅');
                 document.getElementById('withdrawAmountInput').value = '';
+                
+                // Notify via Bot
+                notifyBot(dbUser.userId, `⏳ <b>উইথড্র রিকোয়েস্ট!</b>\nআপনার ${amt} পয়েন্ট উইথড্র রিকোয়েস্ট গ্রহণ করা হয়েছে।\nMethod: ${method.name}\nখুব শীঘ্রই অ্যাডমিন এটি অ্যাপ্রুভ করবেন।`);
             } catch(e) {
                 showModal('Error', 'Transaction failed', '❌');
             }
@@ -946,20 +1118,31 @@
              tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(txt)}&text=Join Free Cash & Earn Money!`);
         };
 
-        // --- INIT ---
+        // --- INIT & Realtime DB Setup ---
         const tgUser = tg.initDataUnsafe.user;
         if(tgUser) {
             const userId = String(tgUser.id);
+            
             db.collection('users').doc(userId).onSnapshot(doc => {
                 if(doc.exists) {
-                    currentUser = doc.data();
-                    if(currentUser.lastTaskDate !== new Date().toDateString()) {
+                    const data = doc.data();
+                    
+                    // Daily Energy Refill Logic
+                    if(data.lastActiveDate !== new Date().toDateString()) {
                         db.collection('users').doc(userId).update({
-                            dailyTasksCompleted: 0,
-                            lastTaskDate: new Date().toDateString()
+                            energy: MAX_ENERGY,
+                            lastActiveDate: new Date().toDateString()
                         });
+                        return; // Wait for next snapshot
                     }
-                    updateUI();
+
+                    dbUser = data;
+                    
+                    // Update Local State gently without overriding unsynced points
+                    localBalance = dbUser.balance + unsyncedPoints;
+                    localEnergy = (dbUser.energy !== undefined ? dbUser.energy : MAX_ENERGY) - unsyncedEnergyUsed;
+                    
+                    refreshUI();
                 } else {
                     const newUser = {
                         userId: userId,
@@ -969,9 +1152,11 @@
                         photo_url: tgUser.photo_url || '',
                         balance: 0,
                         totalEarnings: 0,
-                        dailyTasksCompleted: 0,
-                        lastTaskDate: new Date().toDateString(),
+                        totalTasksCompleted: 0,
+                        energy: MAX_ENERGY,
+                        lastActiveDate: new Date().toDateString(),
                         referredUsersCount: 0,
+                        claimedMilestones: [],
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
                     const startParam = tg.initDataUnsafe.start_param;
@@ -981,6 +1166,8 @@
                             db.collection('users').doc(newUser.referredBy).update({
                                 referredUsersCount: firebase.firestore.FieldValue.increment(1)
                             });
+                            // Notify Referrer!
+                            notifyBot(newUser.referredBy, `🎉 <b>নতুন রেফারেল!</b>\nআপনার রেফার লিংক ব্যবহার করে নতুন একজন জয়েন করেছে। আপনার টার্গেট চেক করুন!`);
                         }
                     }
                     db.collection('users').doc(userId).set(newUser);
