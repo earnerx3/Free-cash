@@ -242,7 +242,7 @@
             transition: 0.3s;
         }
 
-        /* --- Floating Animation (Optimistic UI Effect) --- */
+        /* --- Floating Animation --- */
         .floating-text {
             position: fixed; 
             color: var(--neon-green); 
@@ -257,29 +257,6 @@
         @keyframes floatUp { 
             0% { opacity: 1; transform: translateY(0); } 
             100% { opacity: 0; transform: translateY(-50px); } 
-        }
-
-        /* --- Daily Check-in --- */
-        .checkin-grid { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-top: 10px; 
-        }
-
-        .day-box {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 700; color: var(--text-muted);
-        }
-
-        .day-box.active {
-            background: var(--gold-gradient);
-            color: #240b36;
-            border: none;
-            box-shadow: 0 0 10px var(--gold-glow);
         }
 
         /* --- Home Milestone Card --- */
@@ -408,10 +385,6 @@
             color: var(--text-muted); text-align: center; 
         }
 
-        .rank-1 .rank-idx { color: var(--gold-primary); font-size: 20px; }
-        .rank-2 .rank-idx { color: var(--silver); font-size: 18px; }
-        .rank-3 .rank-idx { color: var(--bronze); font-size: 18px; }
-
         .rank-user { 
             display: flex; align-items: center; gap: 10px; flex: 1; 
         }
@@ -425,52 +398,16 @@
         }
 
         /* --- Currency Switcher & Withdraw --- */
-        .currency-selector-container {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        .currency-select {
-            background: rgba(0,0,0,0.4);
-            color: var(--text-white);
-            border: 1px solid var(--gold-primary);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 12px;
-            outline: none;
-            font-weight: 600;
-        }
+        .currency-selector-container { margin-bottom: 15px; text-align: right; }
+        .currency-select { background: rgba(0,0,0,0.4); color: var(--text-white); border: 1px solid var(--gold-primary); padding: 8px 12px; border-radius: 10px; font-size: 12px; outline: none; font-weight: 600; }
         
-        .balance-display-lg {
-            text-align: center; margin: 20px 0;
-        }
+        .balance-display-lg { text-align: center; margin: 20px 0; }
+        .balance-lg-val { font-size: 36px; font-weight: 800; color: var(--text-white); text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .balance-lg-fiat { font-size: 16px; color: var(--neon-green); font-weight: 600; margin-top: 5px; }
 
-        .balance-lg-val { 
-            font-size: 36px; font-weight: 800; 
-            color: var(--text-white); 
-            text-shadow: 0 0 20px rgba(255,255,255,0.3); 
-        }
-
-        .balance-lg-fiat { 
-            font-size: 16px; color: var(--neon-green); 
-            font-weight: 600; margin-top: 5px; 
-        }
-
-        .input-group label { 
-            display: block; font-size: 11px; 
-            color: var(--text-muted); margin-bottom: 6px; 
-        }
-
-        .input-field {
-            width: 100%; background: rgba(0,0,0,0.3); 
-            border: 1px solid var(--glass-border);
-            padding: 14px; border-radius: 12px; 
-            color: white; font-size: 14px; outline: none; margin-bottom: 15px;
-        }
-
-        .input-field:focus { 
-            border-color: var(--neon-green); 
-        }
+        .input-group label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+        .input-field { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 14px; border-radius: 12px; color: white; font-size: 14px; outline: none; margin-bottom: 15px; }
+        .input-field:focus { border-color: var(--neon-green); }
 
         /* --- Floating Bottom Nav --- */
         .bottom-nav {
@@ -495,21 +432,10 @@
             position: relative; width: 50px; cursor: pointer;
         }
 
-        .nav-btn svg { 
-            width: 22px; height: 22px; margin-bottom: 4px; 
-        }
-
-        .nav-btn span { 
-            font-size: 9px; font-weight: 600; 
-        }
-        
-        .nav-btn.active { 
-            color: var(--gold-primary); 
-        }
-
-        .nav-btn.active svg { 
-            filter: drop-shadow(0 0 8px var(--gold-primary)); 
-        }
+        .nav-btn svg { width: 22px; height: 22px; margin-bottom: 4px; }
+        .nav-btn span { font-size: 9px; font-weight: 600; }
+        .nav-btn.active { color: var(--gold-primary); }
+        .nav-btn.active svg { filter: drop-shadow(0 0 8px var(--gold-primary)); }
 
         /* --- Modal --- */
         .modal-overlay {
@@ -525,11 +451,9 @@
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
         }
 
-        .modal-content.show { 
-            transform: scale(1); opacity: 1; 
-        }
+        .modal-content.show { transform: scale(1); opacity: 1; }
 
-        /* Premium Banner Added Style */
+        /* --- Premium Banner & RGB Progress Style --- */
         .premium-ad-banner {
             background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
             border-radius: 18px;
@@ -546,6 +470,32 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+        }
+        
+        .rgb-progress-container { width: 100%; margin: 15px 0 5px 0; }
+        .rgb-bar-bg { 
+            width: 100%; height: 10px; 
+            background: rgba(0,0,0,0.6); 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            overflow: hidden; 
+            position: relative;
+        }
+        .rgb-bar-fill { 
+            height: 100%; width: 0%; 
+            border-radius: 10px; 
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00d2ff, #4b0082, #8b00ff); 
+            background-size: 200% 200%; 
+            animation: rgbGlow 3s linear infinite; 
+            transition: width 0.4s ease-out; 
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); 
+        }
+        @keyframes rgbGlow { 0% {background-position: 0% 50%;} 100% {background-position: 200% 50%;} }
+        
+        .ad-stats-text { 
+            display: flex; justify-content: space-between; 
+            font-size: 11px; color: var(--text-muted); 
+            margin-top: 6px; font-weight: 700; 
         }
 
     </style>
@@ -578,20 +528,6 @@
                 <div id="milestoneContent">
                     <p style="font-size: 12px; color: var(--text-muted);">Loading milestones...</p>
                 </div>
-            </div>
-
-            <div class="glass-card">
-                <div class="card-header"><span class="card-icon">📅</span> <h2>Daily Rewards</h2></div>
-                <div class="checkin-grid" id="dailyCheckinList">
-                    <div class="day-box active">1</div>
-                    <div class="day-box">2</div>
-                    <div class="day-box">3</div>
-                    <div class="day-box">4</div>
-                    <div class="day-box">5</div>
-                    <div class="day-box">6</div>
-                    <div class="day-box" style="color:var(--gold-primary);">🎁</div>
-                </div>
-                <p style="font-size:11px; text-align:center; color:var(--text-muted); margin-top:10px;">Reset at 00:00 UTC</p>
             </div>
 
             <div class="stats-grid">
@@ -629,9 +565,18 @@
                 <div class="premium-ad-inner">
                     <div style="font-size: 45px; margin-bottom: 8px; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5));">📺</div>
                     <h3 style="color: var(--gold-primary); margin-bottom: 5px; font-size: 22px;">Watch & Earn</h3>
-                    <p style="color: var(--text-lavender); font-size: 13px; margin-bottom: 18px;">Watch a short sponsored video to instantly claim your points!</p>
+                    <p style="color: var(--text-lavender); font-size: 13px; margin-bottom: 5px;">Watch a short sponsored video to instantly claim your points!</p>
+                    <p style="font-size: 10px; color: var(--neon-green); margin-bottom: 10px; font-weight: bold;">Network: <span id="currentAdNetworkName">Monetag</span></p>
                     
-                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; background: rgba(0,0,0,0.4); padding: 12px 18px; border-radius: 14px; border: 1px solid var(--glass-border);">
+                    <div class="rgb-progress-container">
+                        <div class="rgb-bar-bg"><div class="rgb-bar-fill" id="adRgbFill"></div></div>
+                        <div class="ad-stats-text">
+                            <span id="adCycleText">Cycle resets in 3h</span>
+                            <span id="adStatsCount">0 / 20 Ads</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; background: rgba(0,0,0,0.4); padding: 12px 18px; border-radius: 14px; border: 1px solid var(--glass-border); margin-top: 15px;">
                         <div style="text-align: left;">
                             <div style="color: var(--neon-green); font-weight: 800; font-size: 16px;">+<span id="adPointsStd">100</span> Pts</div>
                             <div style="color: var(--text-muted); font-size: 11px;">Cost: 10⚡</div>
@@ -728,17 +673,12 @@
                 <p style="font-size:11px; color:var(--text-muted); margin-bottom:15px;">
                     Invite friends and unlock massive bonus rewards!
                 </p>
-                <div id="milestoneList">
-                    </div>
+                <div id="milestoneList"></div>
             </div>
 
             <div class="glass-card">
                 <div class="card-header"><span class="card-icon">🤝</span> <h2>Your Invite Link</h2></div>
-                
-                <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-family:monospace; color:var(--gold-primary); word-break:break-all; font-size:12px; border:1px solid var(--glass-border); margin-bottom:12px;" id="referLinkBox">
-                    Loading link...
-                </div>
-                
+                <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-family:monospace; color:var(--gold-primary); word-break:break-all; font-size:12px; border:1px solid var(--glass-border); margin-bottom:12px;" id="referLinkBox">Loading link...</div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <button class="btn btn-gold" id="btnCopyRef">Copy Link</button>
                     <button class="btn btn-glass" id="btnShareRef">Share</button>
@@ -797,7 +737,6 @@
         const BOT_USERNAME = "Fre_e_Cash_Bot"; 
         const SHORT_NAME = "app"; 
         
-        // *** GLOBAL CURRENCY RATES (Base: USD) ***
         const CURRENCY_RATES = {
             'USD': { rate: 1, symbol: '$' },
             'BDT': { rate: 120, symbol: '৳' },
@@ -830,14 +769,18 @@
         let unsyncedEnergyUsed = 0;
         const MAX_ENERGY = 100;
         
-        // Window Objects for task states so they survive re-renders
+        // --- AD LIMIT & CYCLE VARIABLES ---
+        let unsyncedAdsWatched = 0;
+        let localAdsWatched = 0;
+        let cycleStartTime = 0;
+        let adLimit = 20; // Default limit
+        let adCountdownInterval = null;
+        const CYCLE_DURATION = 3 * 60 * 60 * 1000; // 3 Hours
+        
         window.activeCountdowns = window.activeCountdowns || {};
         window.claimableTasks = window.claimableTasks || {};
 
-        // --- Core Utils ---
-        function formatNumber(num) {
-            return (num || 0).toLocaleString();
-        }
+        function formatNumber(num) { return (num || 0).toLocaleString(); }
 
         function showFloatingText(text, x, y) {
             const el = document.createElement('div');
@@ -849,7 +792,6 @@
             setTimeout(() => el.remove(), 1000);
         }
 
-        // *** BOT NOTIFICATION FUNCTION ***
         async function notifyBot(userId, message) {
             if(!appConfig || !appConfig.botToken) return;
             const url = `https://api.telegram.org/bot${appConfig.botToken}/sendMessage`;
@@ -859,30 +801,32 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ chat_id: userId, text: message, parse_mode: "HTML" })
                 });
-            } catch(e) { 
-                console.log("Bot notification failed"); 
-            }
+            } catch(e) { console.log("Bot notification failed"); }
         }
 
         // *** DATA SYNC (Optimistic Update to Server) ***
         async function syncWithServer() {
-            if(!dbUser || (unsyncedPoints === 0 && unsyncedEnergyUsed === 0)) return;
+            if(!dbUser || (unsyncedPoints === 0 && unsyncedEnergyUsed === 0 && unsyncedAdsWatched === 0)) return;
             
             const pointsToSync = unsyncedPoints;
             const energyToSync = unsyncedEnergyUsed;
+            const adsToSync = unsyncedAdsWatched;
             
             unsyncedPoints = 0; 
             unsyncedEnergyUsed = 0;
+            unsyncedAdsWatched = 0;
 
             try {
                 await db.collection('users').doc(dbUser.userId).update({
                     balance: firebase.firestore.FieldValue.increment(pointsToSync),
                     totalEarnings: firebase.firestore.FieldValue.increment(pointsToSync),
-                    energy: firebase.firestore.FieldValue.increment(-energyToSync)
+                    energy: firebase.firestore.FieldValue.increment(-energyToSync),
+                    adsWatchedThisCycle: firebase.firestore.FieldValue.increment(adsToSync)
                 });
             } catch(e) {
                 unsyncedPoints += pointsToSync;
                 unsyncedEnergyUsed += energyToSync;
+                unsyncedAdsWatched += adsToSync;
                 console.error("Sync failed:", e);
             }
         }
@@ -890,44 +834,65 @@
         setInterval(syncWithServer, 20000);
         window.addEventListener('beforeunload', () => { syncWithServer(); });
 
-        // *** CURRENCY DISPLAY LOGIC ***
         function updateCurrencyDisplay() {
             if(!dbUser || !appConfig) return;
-            
             const selectedCurr = document.getElementById('globalCurrencySelector').value;
             const currencyData = CURRENCY_RATES[selectedCurr] || CURRENCY_RATES['USD'];
-            
             const pointsPerDollar = appConfig.dollarExchangeRate || 10000; 
             const balanceUSD = localBalance / pointsPerDollar;
             const convertedValue = balanceUSD * currencyData.rate;
-            
-            document.getElementById('withdrawFiatDisplay').innerText = 
-                `${currencyData.symbol}${convertedValue.toFixed(2)} ${selectedCurr}`;
+            document.getElementById('withdrawFiatDisplay').innerText = `${currencyData.symbol}${convertedValue.toFixed(2)} ${selectedCurr}`;
         }
 
-        // --- Navigation Logic ---
         function navigateToPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            
             if(pageId === 'leaderboardPage') loadLeaderboardCached();
-
             document.querySelectorAll('.nav-btn').forEach(item => {
                 item.classList.remove('active');
-                if(item.getAttribute('onclick').includes(pageId)) {
-                    item.classList.add('active');
-                }
+                if(item.getAttribute('onclick').includes(pageId)) item.classList.add('active');
             });
             tg.HapticFeedback.selectionChanged();
         }
 
-        // --- UI REFRESH (Master Update Function) ---
         function refreshUI() {
             if(!dbUser || !appConfig) return;
             
             localBalance = dbUser.balance + unsyncedPoints;
             localEnergy = (dbUser.energy !== undefined ? dbUser.energy : MAX_ENERGY) - unsyncedEnergyUsed;
             
+            // --- 3-Hour Cycle Reset Logic ---
+            let now = Date.now();
+            let dbCycleStart = dbUser.currentCycleStartTime || 0;
+            adLimit = appConfig.adLimitPerCycle || 20;
+
+            if (dbCycleStart === 0 || (now - dbCycleStart >= CYCLE_DURATION)) {
+                // Time to reset cycle
+                dbUser.currentCycleStartTime = now; 
+                dbUser.adsWatchedThisCycle = 0;
+                localAdsWatched = 0;
+                cycleStartTime = now;
+                unsyncedAdsWatched = 0;
+                
+                // Directly trigger DB update for reset
+                db.collection('users').doc(dbUser.userId).update({
+                    currentCycleStartTime: now,
+                    adsWatchedThisCycle: 0
+                }).catch(e=>console.log(e));
+            } else {
+                localAdsWatched = (dbUser.adsWatchedThisCycle || 0) + unsyncedAdsWatched;
+                cycleStartTime = dbCycleStart;
+            }
+
+            // Network Rotation (Placeholder - keeping Monetag for now)
+            let cycleIndex = Math.floor(now / CYCLE_DURATION) % 3;
+            const networks = ["Monetag", "Gigapop", "Adsgram"];
+            // document.getElementById('currentAdNetworkName').innerText = networks[cycleIndex]; 
+            // *As requested, keeping just Monetag statically for now, but structure is ready*
+            document.getElementById('currentAdNetworkName').innerText = "Monetag"; 
+            
+            updateAdProgressUI();
+
             const fullName = `${dbUser.first_name} ${dbUser.last_name || ''}`.trim();
             const avatarUrl = dbUser.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
             
@@ -962,30 +927,68 @@
             document.getElementById('referLinkBox').innerText = link;
         }
 
+        // --- Ad Progress UI Update ---
+        function updateAdProgressUI() {
+            const fill = document.getElementById('adRgbFill');
+            const statsText = document.getElementById('adStatsCount');
+            const cycleText = document.getElementById('adCycleText');
+            const btn = document.getElementById('btnStandardAd');
+            
+            let percent = (localAdsWatched / adLimit) * 100;
+            if(percent > 100) percent = 100;
+            
+            fill.style.width = percent + '%';
+            statsText.innerText = `${localAdsWatched} / ${adLimit} Ads`;
+            
+            clearInterval(adCountdownInterval);
+            
+            if (localAdsWatched >= adLimit) {
+                btn.disabled = true;
+                
+                // Start Countdown
+                adCountdownInterval = setInterval(() => {
+                    let now = Date.now();
+                    let timeLeft = (cycleStartTime + CYCLE_DURATION) - now;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(adCountdownInterval);
+                        refreshUI(); // Auto reset happens here
+                    } else {
+                        let h = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        let m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        let s = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                        
+                        btn.innerText = `Wait ${h}h ${m}m ${s}s`;
+                        cycleText.innerText = "Limit Reached!";
+                        cycleText.style.color = "var(--text-light)";
+                    }
+                }, 1000);
+            } else {
+                btn.disabled = false;
+                btn.innerText = 'Watch Video';
+                cycleText.innerText = "Active Cycle";
+                cycleText.style.color = "var(--neon-green)";
+            }
+        }
+
+        // --- Milestone & Core Functions (Unchanged) ---
         function renderMilestoneOnHome() {
             const container = document.getElementById('milestoneContent');
             if(!appConfig.milestones || appConfig.milestones.length === 0) {
                 container.innerHTML = "<p style='font-size:12px; color:var(--text-muted);'>No active rewards currently.</p>"; 
                 return;
             }
-
             const refs = dbUser.referredUsersCount || 0;
             const claimed = dbUser.claimedMilestones || [];
-            
             const nextMilestone = appConfig.milestones.find(m => !claimed.includes(m.required)) || appConfig.milestones[appConfig.milestones.length - 1];
             const isAllClaimed = claimed.includes(nextMilestone.required);
-
             const progress = Math.min(refs, nextMilestone.required);
             const percent = (progress / nextMilestone.required) * 100;
 
             let actionBtn = "";
-            if(isAllClaimed) {
-                actionBtn = `<button class="btn btn-glass" disabled>All Rewards Claimed ✅</button>`;
-            } else if(refs >= nextMilestone.required) {
-                actionBtn = `<button class="btn btn-gold" onclick="claimMilestone(${nextMilestone.required}, ${nextMilestone.reward})">Claim ${nextMilestone.reward} Points</button>`;
-            } else {
-                actionBtn = `<button class="btn btn-glass" onclick="navigateToPage('profilePage')">Invite ${nextMilestone.required - refs} more to unlock</button>`;
-            }
+            if(isAllClaimed) { actionBtn = `<button class="btn btn-glass" disabled>All Rewards Claimed ✅</button>`; } 
+            else if(refs >= nextMilestone.required) { actionBtn = `<button class="btn btn-gold" onclick="claimMilestone(${nextMilestone.required}, ${nextMilestone.reward})">Claim ${nextMilestone.reward} Points</button>`; } 
+            else { actionBtn = `<button class="btn btn-glass" onclick="navigateToPage('profilePage')">Invite ${nextMilestone.required - refs} more to unlock</button>`; }
 
             container.innerHTML = `
                 <div style="text-align:left;">
@@ -999,18 +1002,15 @@
                         <span>${percent.toFixed(0)}%</span>
                     </div>
                     <div style="margin-top:15px;">${actionBtn}</div>
-                </div>
-            `;
+                </div>`;
         }
 
         function renderMilestones() {
             const div = document.getElementById('milestoneList');
             div.innerHTML = '';
             if(!appConfig.milestones || appConfig.milestones.length === 0) { 
-                div.innerHTML = '<p style="text-align:center; font-size:12px; color:var(--text-muted);">No active milestones</p>'; 
-                return; 
+                div.innerHTML = '<p style="text-align:center; font-size:12px; color:var(--text-muted);">No active milestones</p>'; return; 
             }
-            
             const refs = dbUser.referredUsersCount || 0;
             const claimed = dbUser.claimedMilestones || [];
 
@@ -1018,13 +1018,9 @@
                 const isClaimed = claimed.includes(m.required);
                 const progress = Math.min(refs, m.required);
                 const percent = (progress / m.required) * 100;
-                
                 let actionBtn = `<button class="btn-sm btn-glass" disabled>Locked</button>`;
-                if(isClaimed) {
-                    actionBtn = `<button class="btn-sm btn-glass" style="color:var(--neon-green); border-color:var(--neon-green);" disabled>Claimed ✅</button>`;
-                } else if(progress >= m.required) {
-                    actionBtn = `<button class="btn-sm btn-gold" onclick="claimMilestone(${m.required}, ${m.reward})">Claim ${m.reward}</button>`;
-                }
+                if(isClaimed) { actionBtn = `<button class="btn-sm btn-glass" style="color:var(--neon-green); border-color:var(--neon-green);" disabled>Claimed ✅</button>`; } 
+                else if(progress >= m.required) { actionBtn = `<button class="btn-sm btn-gold" onclick="claimMilestone(${m.required}, ${m.reward})">Claim ${m.reward}</button>`; }
 
                 div.innerHTML += `
                 <div class="milestone-box">
@@ -1049,16 +1045,12 @@
                     balance: firebase.firestore.FieldValue.increment(reward),
                     claimedMilestones: firebase.firestore.FieldValue.arrayUnion(target)
                 });
-                
                 showModal('Claimed!', `Bonus ${reward} points added to your balance.`, '💰');
-                
                 if(appConfig.botToken) {
                     const msg = `🎉 <b>অভিনন্দন!</b>\nআপনি ${target} টি রেফার টার্গেট পূরণ করেছেন এবং <b>${reward} পয়েন্ট</b> বোনাস পেয়েছেন!\n\nKeep sharing your link! 🚀`;
                     notifyBot(dbUser.userId, msg);
                 }
-            } catch(e) { 
-                showModal('Error', 'Failed to claim reward.', '❌'); 
-            }
+            } catch(e) { showModal('Error', 'Failed to claim reward.', '❌'); }
         }
 
         async function loadLeaderboardCached() {
@@ -1068,83 +1060,61 @@
             const now = Date.now();
 
             if(cacheData && cacheTime && (now - cacheTime < 86400000)) {
-                renderLeaderboardHTML(JSON.parse(cacheData));
-                return;
+                renderLeaderboardHTML(JSON.parse(cacheData)); return;
             }
 
             try {
                 const snap = await db.collection('users').orderBy('balance', 'desc').limit(50).get();
                 let lbArray = [];
                 snap.forEach(doc => lbArray.push(doc.data()));
-                
                 localStorage.setItem('lb_data', JSON.stringify(lbArray));
                 localStorage.setItem('lb_time', now);
                 renderLeaderboardHTML(lbArray);
-            } catch(e) {
-                list.innerHTML = '<div style="text-align:center;color:red;">Failed to load rankings</div>';
-            }
+            } catch(e) { list.innerHTML = '<div style="text-align:center;color:red;">Failed to load rankings</div>'; }
         }
 
         function renderLeaderboardHTML(lbArray) {
             const list = document.getElementById('leaderboardList');
             list.innerHTML = '';
-            
             lbArray.forEach((u, idx) => {
                 const rank = idx + 1;
                 const isMe = u.userId === dbUser.userId;
                 const name = u.first_name + (u.last_name ? ' '+u.last_name : '');
                 const avatar = u.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
                 const score = formatNumber(u.balance);
-                
                 const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
                 
                 list.innerHTML += `
                 <div class="rank-row ${rankClass}">
                     <div class="rank-idx">${rank}</div>
-                    <div class="rank-user">
-                        <img src="${avatar}">
-                        <div style="font-size:13px; font-weight:600; color:var(--text-white);">
-                            ${name} ${isMe ? '(You)' : ''}
-                        </div>
+                    <div class="rank-user"><img src="${avatar}">
+                        <div style="font-size:13px; font-weight:600; color:var(--text-white);">${name} ${isMe ? '(You)' : ''}</div>
                     </div>
                     <div class="rank-score">${score}</div>
                 </div>`;
             });
         }
 
-        // --- NEW Dynamic Tasks Logic (Countdown on Button + Claim + Auto Reset) ---
         function renderDynamicTasks() {
             const div = document.getElementById('dynamicTasksList');
             div.innerHTML = '';
-            
             appConfig.dynamicTasks?.forEach(task => {
                 const today = new Date().toDateString();
-                // Check if completed today. This natively handles midnight resets.
                 const isDone = (dbUser.completedTasks?.[task.id] === today) || (task.type === 'one-time' && dbUser.completedTasks?.[task.id] === 'completed');
-                
                 const countdown = window.activeCountdowns[task.id];
                 const isClaimable = window.claimableTasks[task.id];
-                
                 let btnHTML = '';
                 
-                if (isDone) {
-                    btnHTML = `<button class="btn-sm btn-glass" style="opacity:0.5; color: var(--neon-green); border-color: var(--neon-green);" disabled>Completed</button>`;
-                } else if (isClaimable) {
-                    btnHTML = `<button class="btn-sm btn-gold" id="taskBtn_${task.id}" onclick="claimTask(event, '${task.id}')">Claim</button>`;
-                } else if (countdown > 0) {
-                    btnHTML = `<button class="btn-sm btn-glass" id="taskBtn_${task.id}" disabled>${countdown}s</button>`;
-                } else {
-                    btnHTML = `<button class="btn-sm btn-glass" id="taskBtn_${task.id}" onclick="startTask('${task.id}')">Join</button>`;
-                }
+                if (isDone) { btnHTML = `<button class="btn-sm btn-glass" style="opacity:0.5; color: var(--neon-green); border-color: var(--neon-green);" disabled>Completed</button>`; } 
+                else if (isClaimable) { btnHTML = `<button class="btn-sm btn-gold" id="taskBtn_${task.id}" onclick="claimTask(event, '${task.id}')">Claim</button>`; } 
+                else if (countdown > 0) { btnHTML = `<button class="btn-sm btn-glass" id="taskBtn_${task.id}" disabled>${countdown}s</button>`; } 
+                else { btnHTML = `<button class="btn-sm btn-glass" id="taskBtn_${task.id}" onclick="startTask('${task.id}')">Join</button>`; }
 
                 div.innerHTML += `
                  <div class="task-item">
                      <div class="task-left">
                          <div class="task-icon" style="background:rgba(255,255,255,0.05); color:var(--text-lavender);">🔗</div>
-                         <div class="task-meta">
-                             <h4>${task.name}</h4>
-                             <span>+${task.points} Pts (Cost: 5⚡)</span>
-                         </div>
+                         <div class="task-meta"><h4>${task.name}</h4><span>+${task.points} Pts (Cost: 5⚡)</span></div>
                      </div>
                      ${btnHTML}
                  </div>`;
@@ -1154,40 +1124,27 @@
         function startTask(taskId) {
             const task = appConfig.dynamicTasks.find(t => t.id === taskId);
             const cost = 5;
-            if(localEnergy < cost) {
-                return showModal('Low Energy', `You need ${cost}⚡ to start this task. Please wait for refill.`, '⚡');
-            }
+            if(localEnergy < cost) return showModal('Low Energy', `You need ${cost}⚡ to start this task.`, '⚡');
 
-            // Open Link silently, NO popups
             tg.openLink(task.link);
-
             let timeLeft = task.timer || 10;
             window.activeCountdowns[taskId] = timeLeft;
 
             const btn = document.getElementById(`taskBtn_${taskId}`);
-            if(btn) {
-                btn.disabled = true;
-                btn.innerText = `${timeLeft}s`;
-            }
+            if(btn) { btn.disabled = true; btn.innerText = `${timeLeft}s`; }
 
             const timerInterval = setInterval(() => {
                 window.activeCountdowns[taskId]--;
                 const currentBtn = document.getElementById(`taskBtn_${taskId}`);
-                
-                if(currentBtn && window.activeCountdowns[taskId] > 0) {
-                    currentBtn.innerText = `${window.activeCountdowns[taskId]}s`;
-                }
+                if(currentBtn && window.activeCountdowns[taskId] > 0) currentBtn.innerText = `${window.activeCountdowns[taskId]}s`;
 
                 if(window.activeCountdowns[taskId] <= 0) {
                     clearInterval(timerInterval);
                     delete window.activeCountdowns[taskId];
                     window.claimableTasks[taskId] = true;
-                    
                     if(currentBtn) {
-                        currentBtn.disabled = false;
-                        currentBtn.innerText = "Claim";
-                        currentBtn.className = "btn-sm btn-gold";
-                        currentBtn.onclick = (e) => claimTask(e, taskId);
+                        currentBtn.disabled = false; currentBtn.innerText = "Claim";
+                        currentBtn.className = "btn-sm btn-gold"; currentBtn.onclick = (e) => claimTask(e, taskId);
                     }
                 }
             }, 1000);
@@ -1196,22 +1153,15 @@
         async function claimTask(event, taskId) {
             const task = appConfig.dynamicTasks.find(t => t.id === taskId);
             if(!task) return;
-            
             const cost = 5;
-            
-            // Remove from claimable state immediately
             delete window.claimableTasks[taskId];
 
-            // Apply Optimistic Reward Locally
-            localEnergy -= cost;
-            localBalance += task.points;
-            unsyncedEnergyUsed += cost;
-            unsyncedPoints += task.points;
+            localEnergy -= cost; localBalance += task.points;
+            unsyncedEnergyUsed += cost; unsyncedPoints += task.points;
             
             showFloatingText(`+${task.points}`, event.clientX, event.clientY);
             tg.HapticFeedback.impactOccurred('medium');
             
-            // Database update
             const ref = db.collection('users').doc(dbUser.userId);
             const today = new Date().toDateString();
             const taskStatus = task.type === 'one-time' ? 'completed' : today;
@@ -1226,7 +1176,6 @@
                 });
             } catch(e) { console.log(e); }
             
-            // Only show popup upon successful claim
             showModal('Awesome!', `You successfully claimed ${task.points} points.`, '🎁');
             refreshUI(); 
         }
@@ -1247,22 +1196,18 @@
                 if(func) {
                     const p = type === 'pop' ? func('pop') : func();
                     p.then(resolve).catch(reject);
-                } else {
-                    reject("Ad SDK not ready");
-                }
+                } else { reject("Ad SDK not ready"); }
             });
         }
 
         document.getElementById('btnStandardAd').onclick = async function(event) {
+            if (localAdsWatched >= adLimit) return showModal('Limit Reached', 'You have watched all ads for this cycle. Please wait for the timer to reset.', '⏳');
+
             const cost = 10;
-            if(localEnergy < cost) {
-                return showModal('Low Energy', `You need ${cost}⚡ to watch this ad.`, '⚡');
-            }
+            if(localEnergy < cost) return showModal('Low Energy', `You need ${cost}⚡ to watch this ad.`, '⚡');
             
             const btn = this;
-            btn.innerText = 'Watching...';
-            btn.disabled = true;
-
+            btn.innerText = 'Watching...'; btn.disabled = true;
             const startTime = Date.now(); 
 
             try {
@@ -1271,48 +1216,44 @@
                 
                 if(duration < 10000) { 
                     showModal('Failed', 'You closed the ad too early! Minimum 10 seconds required.', '⚠️');
-                    btn.innerText = 'Watch Video';
-                    btn.disabled = false;
+                    btn.innerText = 'Watch Video'; btn.disabled = false;
                     return; 
                 }
 
                 const reward = appConfig.standardAdPoints || 100;
-                localEnergy -= cost;
-                localBalance += reward;
-                unsyncedEnergyUsed += cost;
-                unsyncedPoints += reward;
+                
+                // Add points
+                localEnergy -= cost; localBalance += reward;
+                unsyncedEnergyUsed += cost; unsyncedPoints += reward;
+                
+                // Advance Ad Watch Stats!
+                localAdsWatched++;
+                unsyncedAdsWatched++;
                 
                 showFloatingText(`+${reward}`, event.clientX, event.clientY);
                 tg.HapticFeedback.impactOccurred('medium');
-                refreshUI();
                 
-                btn.innerText = 'Watch Video';
-                btn.disabled = false;
+                refreshUI(); // Will automatically call updateAdProgressUI and update UI elements
+                
             } catch(e) {
                 console.log(e);
                 showModal('Error', 'Ad failed to load properly.', '❌');
-                btn.innerText = 'Watch Video';
-                btn.disabled = false;
+                btn.innerText = 'Watch Video'; btn.disabled = false;
             }
         };
 
-        // --- Helper Lists Logic ---
+        // --- Withdraw Methods ---
         function renderMethods() {
             const sel = document.getElementById('withdrawMethod');
             sel.innerHTML = '';
-            appConfig.paymentMethods?.forEach(m => {
-                sel.innerHTML += `<option value="${m.id}">${m.name} (Min: ${m.minAmount})</option>`;
-            });
+            appConfig.paymentMethods?.forEach(m => { sel.innerHTML += `<option value="${m.id}">${m.name} (Min: ${m.minAmount})</option>`; });
         }
 
         async function renderHistory() {
             const list = document.getElementById('withdrawHistory');
             list.innerHTML = '';
             const snap = await db.collection('withdrawals').where('userId', '==', dbUser.userId).orderBy('createdAt', 'desc').limit(5).get();
-            if(snap.empty) { 
-                list.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px;">No history yet.</div>'; 
-                return; 
-            }
+            if(snap.empty) { list.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px;">No history yet.</div>'; return; }
             
             snap.forEach(doc => {
                 const d = doc.data();
@@ -1322,10 +1263,7 @@
                 
                 list.innerHTML += `
                 <div class="task-item" style="border-left: 3px solid ${color}">
-                    <div>
-                        <div style="font-size:13px; color:white;">${d.paymentMethodName}</div>
-                        <div style="font-size:10px; color:#888;">${formatNumber(d.amount)} Pts</div>
-                    </div>
+                    <div><div style="font-size:13px; color:white;">${d.paymentMethodName}</div><div style="font-size:10px; color:#888;">${formatNumber(d.amount)} Pts</div></div>
                     <div style="font-size:11px; font-weight:bold; color:${color};">${d.status}</div>
                 </div>`;
             });
@@ -1337,23 +1275,17 @@
              appConfig.supportLinks?.forEach(l => {
                  div.innerHTML += `
                  <div class="task-item" onclick="window.open('${l.link}')">
-                     <div class="task-left">
-                         <div class="task-icon">💬</div>
-                         <h4>${l.name}</h4>
-                     </div>
+                     <div class="task-left"><div class="task-icon">💬</div><h4>${l.name}</h4></div>
                      <span style="font-size:12px; color:var(--text-muted);">Open ></span>
                  </div>`;
              });
         }
 
-        // --- Withdraw Logic ---
         document.getElementById('btnSubmitWithdraw').onclick = async function() {
             await syncWithServer(); 
-            
             const amt = parseInt(document.getElementById('withdrawAmountInput').value);
             const addr = document.getElementById('withdrawAddress').value;
             const methodId = document.getElementById('withdrawMethod').value;
-            
             if(!amt || !addr) return showModal('Error', 'Please fill all the fields.', '⚠️');
             
             const doc = await db.collection('users').doc(dbUser.userId).get();
@@ -1379,7 +1311,6 @@
                          createdAt: firebase.firestore.FieldValue.serverTimestamp()
                      });
                 });
-                
                 showModal('Processing', 'Your withdrawal has been requested successfully!', '✅');
                 document.getElementById('withdrawAmountInput').value = '';
                 renderHistory(); 
@@ -1388,24 +1319,17 @@
                     const msg = `⏳ <b>উইথড্র রিকোয়েস্ট!</b>\nআপনার ${amt} পয়েন্ট উইথড্র রিকোয়েস্ট গ্রহণ করা হয়েছে।\nMethod: ${method.name}\nখুব শীঘ্রই অ্যাডমিন এটি অ্যাপ্রুভ করবেন।`;
                     notifyBot(dbUser.userId, msg);
                 }
-            } catch(e) {
-                showModal('Error', 'Transaction failed to process.', '❌');
-            }
+            } catch(e) { showModal('Error', 'Transaction failed to process.', '❌'); }
         };
         
-        // --- Copy & Share Links ---
         document.getElementById('btnCopyRef').onclick = function() {
-            const txt = document.getElementById('referLinkBox').innerText;
-            navigator.clipboard.writeText(txt);
+            navigator.clipboard.writeText(document.getElementById('referLinkBox').innerText);
             showModal('Copied', 'Referral link copied to your clipboard!', '📋');
         };
-        
         document.getElementById('btnShareRef').onclick = function() {
-             const txt = document.getElementById('referLinkBox').innerText;
-             tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(txt)}&text=Join Free Cash & Earn Real Money today! 🚀`);
+             tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(document.getElementById('referLinkBox').innerText)}&text=Join Free Cash & Earn Real Money today! 🚀`);
         };
 
-        // --- Modals Logic ---
         function showModal(title, msg, icon = '🎉') {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalMsg').innerText = msg;
@@ -1424,7 +1348,6 @@
             setTimeout(() => modal.style.display = 'none', 300);
         }
 
-        // --- APP INITIALIZATION ---
         async function fetchConfig() {
             const doc = await db.collection('config').doc('appConfig').get();
             if(doc.exists) {
@@ -1441,13 +1364,20 @@
             db.collection('users').doc(userId).onSnapshot(doc => {
                 if(doc.exists) {
                     const data = doc.data();
-                    
                     if(data.lastActiveDate !== new Date().toDateString()) {
                         db.collection('users').doc(userId).update({
                             energy: MAX_ENERGY,
                             lastActiveDate: new Date().toDateString()
                         });
                         return; 
+                    }
+                    // Handle initial cycle creation for old users
+                    if(!data.currentCycleStartTime) {
+                         db.collection('users').doc(userId).update({
+                             currentCycleStartTime: Date.now(),
+                             adsWatchedThisCycle: 0
+                         });
+                         return;
                     }
 
                     dbUser = data;
@@ -1466,35 +1396,28 @@
                         lastActiveDate: new Date().toDateString(),
                         referredUsersCount: 0,
                         claimedMilestones: [],
+                        currentCycleStartTime: Date.now(), // Setup Cycle initially
+                        adsWatchedThisCycle: 0,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
                     
                     const startParam = tg.initDataUnsafe.start_param;
                     if(startParam && startParam.startsWith('ref_')) {
                         newUser.referredBy = startParam.split('_')[1];
-                        
                         if(newUser.referredBy !== userId) {
-                            db.collection('users').doc(newUser.referredBy).update({
-                                referredUsersCount: firebase.firestore.FieldValue.increment(1)
-                            });
-                            
+                            db.collection('users').doc(newUser.referredBy).update({ referredUsersCount: firebase.firestore.FieldValue.increment(1) });
                             if(appConfig && appConfig.botToken) {
-                                const msg = `🎉 <b>নতুন রেফারেল!</b>\nআপনার রেফার লিংক ব্যবহার করে নতুন একজন জয়েন করেছে। আপনার টার্গেট চেক করুন!`;
-                                notifyBot(newUser.referredBy, msg);
+                                notifyBot(newUser.referredBy, `🎉 <b>নতুন রেফারেল!</b>\nআপনার রেফার লিংক ব্যবহার করে নতুন একজন জয়েন করেছে। আপনার টার্গেট চেক করুন!`);
                             }
                         }
                     }
-                    
                     db.collection('users').doc(userId).set(newUser);
                 }
             });
-            
             fetchConfig();
-            
         } else {
             document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Please open this app inside Telegram</h2>";
         }
-
     </script>
 </body>
 </html>
