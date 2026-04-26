@@ -538,6 +538,7 @@
                 <div class="stat-item">
                     <div class="stat-val" id="statsEnergy">100/100</div>
                     <div class="stat-label">Energy Left</div>
+                    <button class="btn-sm btn-glass" style="margin-top:8px; width:100%; font-size:10px; padding: 6px; color: var(--gold-primary); border-color: var(--gold-primary);" onclick="buyEnergy()">Buy (+50⚡)</button>
                 </div>
                 <div class="stat-item">
                     <div class="stat-val" id="statsRefers">0</div>
@@ -556,6 +557,48 @@
                     Watch ads and complete tasks to grow your balance. Costs ⚡Energy per task.
                 </p>
                 <button class="btn btn-gold" onclick="navigateToPage('adsPage')">Open Arcade</button>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="font-size: 16px; color: var(--gold-primary);">📖 App Guide</h2>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-sm btn-gold lang-btn" id="btnEn" onclick="switchLang('en')">EN</button>
+                        <button class="btn-sm btn-glass lang-btn" id="btnBn" onclick="switchLang('bn')">BN</button>
+                    </div>
+                </div>
+                
+                <div id="guideTextEn" style="font-size: 12px; color: var(--text-lavender); line-height: 1.6;">
+                    <b>⚡ Energy System:</b><br>
+                    - Maximum Energy is 100.<br>
+                    - Watching an Ad costs 10⚡.<br>
+                    - Completing a task costs 5⚡.<br>
+                    - <b>Mining:</b> Energy regenerates automatically by 1⚡ every minute.<br>
+                    - You can buy 50⚡ for 500 Points anytime using the Buy button.<br><br>
+                    
+                    <b>💰 Earning Points:</b><br>
+                    - Watch Ads to earn instant points. Ad limit resets every 3 hours.<br>
+                    - Complete daily or one-time tasks securely. Tasks cannot be repeated on the same day.<br><br>
+                    
+                    <b>🎁 Referral Bonus:</b><br>
+                    - Invite friends using your unique link. Hit milestones to claim massive bonus rewards!
+                </div>
+                
+                <div id="guideTextBn" style="font-size: 12px; color: var(--text-lavender); line-height: 1.6; display: none;">
+                    <b>⚡ এনার্জি সিস্টেম:</b><br>
+                    - সর্বোচ্চ এনার্জি ১০০ হতে পারবে।<br>
+                    - একটি অ্যাড দেখতে ১০⚡ এনার্জি কাটে।<br>
+                    - একটি টাস্ক কমপ্লিট করতে ৫⚡ কাটে।<br>
+                    - <b>মাইনিং:</b> প্রতি ১ মিনিটে অটোমেটিক ১⚡ করে এনার্জি বাড়বে।<br>
+                    - আপনি চাইলে 'Buy' বাটনে ক্লিক করে ৫০০ পয়েন্ট দিয়ে ৫০⚡ কিনতে পারবেন।<br><br>
+                    
+                    <b>💰 পয়েন্ট বা টাকা আয়:</b><br>
+                    - অ্যাড দেখে সাথে সাথে পয়েন্ট আয় করুন। প্রতি ৩ ঘণ্টা পরপর অ্যাডের লিমিট রিসেট হয়।<br>
+                    - Wall Tasks থেকে ডেইলি বা ওয়ান-টাইম টাস্ক কমপ্লিট করুন। একটি টাস্ক ভুল করে বা ইচ্ছা করে ২ বার করা যাবে না।<br><br>
+                    
+                    <b>🎁 রেফারেল বোনাস:</b><br>
+                    - আপনার ইনভাইট লিংক দিয়ে বন্ধুদের জয়েন করান। রেফার টার্গেট পূরণ হলেই বিশাল পয়েন্ট বোনাস পাবেন!
+                </div>
             </div>
         </div>
 
@@ -834,6 +877,17 @@
         setInterval(syncWithServer, 20000);
         window.addEventListener('beforeunload', () => { syncWithServer(); });
 
+        // *** ENERGY REGENERATION (Mining) ***
+        // Adds 1 Energy every 60 seconds automatically if below MAX_ENERGY
+        setInterval(() => {
+            if (localEnergy < MAX_ENERGY) {
+                localEnergy++;
+                unsyncedEnergyUsed--; // Negative usage means we gained energy
+                document.getElementById('headerEnergyBar').style.width = `${(localEnergy/MAX_ENERGY)*100}%`;
+                document.getElementById('statsEnergy').innerText = `${localEnergy}/${MAX_ENERGY}`;
+            }
+        }, 60000);
+
         function updateCurrencyDisplay() {
             if(!dbUser || !appConfig) return;
             const selectedCurr = document.getElementById('globalCurrencySelector').value;
@@ -842,6 +896,45 @@
             const balanceUSD = localBalance / pointsPerDollar;
             const convertedValue = balanceUSD * currencyData.rate;
             document.getElementById('withdrawFiatDisplay').innerText = `${currencyData.symbol}${convertedValue.toFixed(2)} ${selectedCurr}`;
+        }
+
+        // Language Switcher Function
+        function switchLang(lang) {
+            if(lang === 'en') {
+                document.getElementById('guideTextEn').style.display = 'block';
+                document.getElementById('guideTextBn').style.display = 'none';
+                document.getElementById('btnEn').className = 'btn-sm btn-gold lang-btn';
+                document.getElementById('btnBn').className = 'btn-sm btn-glass lang-btn';
+            } else {
+                document.getElementById('guideTextEn').style.display = 'none';
+                document.getElementById('guideTextBn').style.display = 'block';
+                document.getElementById('btnBn').className = 'btn-sm btn-gold lang-btn';
+                document.getElementById('btnEn').className = 'btn-sm btn-glass lang-btn';
+            }
+        }
+
+        // Buy Energy Function
+        function buyEnergy() {
+            const pointCost = 500;
+            const energyAmount = 50;
+            
+            if (localEnergy >= MAX_ENERGY) {
+                return showModal('Energy Full', 'Your energy is already full!', '⚡');
+            }
+            if (localBalance < pointCost) {
+                return showModal('Low Balance', `You need ${pointCost} points to buy energy.`, '❌');
+            }
+
+            // Deduct points, Add Energy
+            localBalance -= pointCost;
+            unsyncedPoints -= pointCost;
+            
+            localEnergy = Math.min(localEnergy + energyAmount, MAX_ENERGY);
+            unsyncedEnergyUsed -= energyAmount; // negative usage adds to DB
+
+            refreshUI();
+            showModal('Success', `Purchased ${energyAmount}⚡ successfully!`, '⚡');
+            tg.HapticFeedback.notificationOccurred('success');
         }
 
         function navigateToPage(pageId) {
@@ -860,6 +953,7 @@
             
             localBalance = dbUser.balance + unsyncedPoints;
             localEnergy = (dbUser.energy !== undefined ? dbUser.energy : MAX_ENERGY) - unsyncedEnergyUsed;
+            if(localEnergy > MAX_ENERGY) localEnergy = MAX_ENERGY;
             
             // --- 3-Hour Cycle Reset Logic ---
             let now = Date.now();
@@ -867,14 +961,12 @@
             adLimit = appConfig.adLimitPerCycle || 20;
 
             if (dbCycleStart === 0 || (now - dbCycleStart >= CYCLE_DURATION)) {
-                // Time to reset cycle
                 dbUser.currentCycleStartTime = now; 
                 dbUser.adsWatchedThisCycle = 0;
                 localAdsWatched = 0;
                 cycleStartTime = now;
                 unsyncedAdsWatched = 0;
                 
-                // Directly trigger DB update for reset
                 db.collection('users').doc(dbUser.userId).update({
                     currentCycleStartTime: now,
                     adsWatchedThisCycle: 0
@@ -884,13 +976,7 @@
                 cycleStartTime = dbCycleStart;
             }
 
-            // Network Rotation (Placeholder - keeping Monetag for now)
-            let cycleIndex = Math.floor(now / CYCLE_DURATION) % 3;
-            const networks = ["Monetag", "Gigapop", "Adsgram"];
-            // document.getElementById('currentAdNetworkName').innerText = networks[cycleIndex]; 
-            // *As requested, keeping just Monetag statically for now, but structure is ready*
             document.getElementById('currentAdNetworkName').innerText = "Monetag"; 
-            
             updateAdProgressUI();
 
             const fullName = `${dbUser.first_name} ${dbUser.last_name || ''}`.trim();
@@ -945,14 +1031,13 @@
             if (localAdsWatched >= adLimit) {
                 btn.disabled = true;
                 
-                // Start Countdown
                 adCountdownInterval = setInterval(() => {
                     let now = Date.now();
                     let timeLeft = (cycleStartTime + CYCLE_DURATION) - now;
                     
                     if (timeLeft <= 0) {
                         clearInterval(adCountdownInterval);
-                        refreshUI(); // Auto reset happens here
+                        refreshUI(); 
                     } else {
                         let h = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                         let m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
@@ -971,7 +1056,6 @@
             }
         }
 
-        // --- Milestone & Core Functions (Unchanged) ---
         function renderMilestoneOnHome() {
             const container = document.getElementById('milestoneContent');
             if(!appConfig.milestones || appConfig.milestones.length === 0) {
@@ -1154,30 +1238,41 @@
             const task = appConfig.dynamicTasks.find(t => t.id === taskId);
             if(!task) return;
             const cost = 5;
-            delete window.claimableTasks[taskId];
+            
+            if(localEnergy < cost) return showModal('Low Energy', `You need ${cost}⚡ to claim this task.`, '⚡');
 
-            localEnergy -= cost; localBalance += task.points;
-            unsyncedEnergyUsed += cost; unsyncedPoints += task.points;
-            
-            showFloatingText(`+${task.points}`, event.clientX, event.clientY);
-            tg.HapticFeedback.impactOccurred('medium');
-            
-            const ref = db.collection('users').doc(dbUser.userId);
             const today = new Date().toDateString();
+            const isDone = (dbUser.completedTasks?.[taskId] === today) || (task.type === 'one-time' && dbUser.completedTasks?.[taskId] === 'completed');
+            if(isDone) return showModal('Already Done', 'You have already completed this task.', '⚠️');
+
+            const ref = db.collection('users').doc(dbUser.userId);
             const taskStatus = task.type === 'one-time' ? 'completed' : today;
-            
-            if(!dbUser.completedTasks) dbUser.completedTasks = {};
-            dbUser.completedTasks[taskId] = taskStatus;
 
             try {
+                // ১. আগে ডাটাবেস আপডেট হবে 
                 await ref.update({
                     [`completedTasks.${taskId}`]: taskStatus,
                     totalTasksCompleted: firebase.firestore.FieldValue.increment(1)
                 });
-            } catch(e) { console.log(e); }
-            
-            showModal('Awesome!', `You successfully claimed ${task.points} points.`, '🎁');
-            refreshUI(); 
+                
+                // ২. ডাটাবেস সাকসেস হলে তারপর অ্যাপের ভেতরে আপডেট হবে 
+                delete window.claimableTasks[taskId];
+                if(!dbUser.completedTasks) dbUser.completedTasks = {};
+                dbUser.completedTasks[taskId] = taskStatus;
+
+                localEnergy -= cost; localBalance += task.points;
+                unsyncedEnergyUsed += cost; unsyncedPoints += task.points;
+                
+                showFloatingText(`+${task.points}`, event.clientX, event.clientY);
+                tg.HapticFeedback.impactOccurred('medium');
+                
+                showModal('Awesome!', `You successfully claimed ${task.points} points.`, '🎁');
+                refreshUI(); 
+                
+            } catch(e) { 
+                alert("Database Error: " + e.message);
+                console.log(e); 
+            }
         }
 
         // --- Ad Buttons Logic ---
@@ -1233,7 +1328,7 @@
                 showFloatingText(`+${reward}`, event.clientX, event.clientY);
                 tg.HapticFeedback.impactOccurred('medium');
                 
-                refreshUI(); // Will automatically call updateAdProgressUI and update UI elements
+                refreshUI(); 
                 
             } catch(e) {
                 console.log(e);
@@ -1371,7 +1466,6 @@
                         });
                         return; 
                     }
-                    // Handle initial cycle creation for old users
                     if(!data.currentCycleStartTime) {
                          db.collection('users').doc(userId).update({
                              currentCycleStartTime: Date.now(),
@@ -1396,7 +1490,7 @@
                         lastActiveDate: new Date().toDateString(),
                         referredUsersCount: 0,
                         claimedMilestones: [],
-                        currentCycleStartTime: Date.now(), // Setup Cycle initially
+                        currentCycleStartTime: Date.now(),
                         adsWatchedThisCycle: 0,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
