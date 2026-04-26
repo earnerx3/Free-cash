@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Free Cash 💰</title>
+    <title>Premium Cash 💰</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* ROYAL CRYPTO ARCADE PALETTE */
-            --bg-dark: #240b36;
-            --bg-light: #c31432;
-            --bg-gradient: linear-gradient(135deg, #240b36 0%, #1a0625 50%, #2f0c22 100%);
+            /* PREMIUM GOLDEN ELITE PALETTE */
+            --bg-dark: #050505;
+            --bg-light: #141414;
+            --bg-gradient: radial-gradient(circle at top, #1a1500 0%, #050505 60%);
             
             --gold-primary: #FFD700;
-            --gold-glow: rgba(255, 215, 0, 0.4);
-            --gold-gradient: linear-gradient(45deg, #FFD700, #FDB931);
+            --gold-secondary: #D4AF37;
+            --gold-glow: rgba(255, 215, 0, 0.3);
+            --gold-gradient: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            --gold-gradient-dark: linear-gradient(135deg, #8A6220, #D4AF37, #8A6220);
             
-            --neon-green: #00e676;
-            --neon-green-glow: rgba(0, 230, 118, 0.4);
-            --neon-blue: #00d2ff;
+            --neon-green: #00FF7F;
+            --neon-green-glow: rgba(0, 255, 127, 0.3);
             
-            --text-white: #ffffff;
-            --text-lavender: #E6E6FA;
-            --text-muted: #9caab9;
+            --text-white: #FFFFFF;
+            --text-muted: #A9A9A9;
+            --text-gold: #FCE883;
             
-            --glass-bg: rgba(255, 255, 255, 0.07);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-blur: blur(20px);
+            --glass-bg: rgba(25, 25, 25, 0.6);
+            --glass-border: rgba(255, 215, 0, 0.15);
+            --glass-blur: blur(16px);
             
             --silver: #E0E0E0;
             --bronze: #CD7F32;
@@ -49,9 +49,7 @@
 
         body {
             background: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(195, 20, 50, 0.25) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(36, 11, 54, 0.4) 0%, transparent 45%);
+            background-image: var(--bg-gradient);
             background-attachment: fixed;
             color: var(--text-white);
             min-height: 100vh;
@@ -59,110 +57,154 @@
             padding-bottom: 100px;
         }
 
+        /* --- Custom Live Toast Container --- */
+        #toastContainer {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .live-toast {
+            background: rgba(10, 10, 10, 0.85);
+            border: 1px solid var(--gold-secondary);
+            color: var(--text-white);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px var(--gold-glow);
+            animation: slideDownFade 3.5s forwards cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes slideDownFade {
+            0% { opacity: 0; transform: translateY(-20px) scale(0.9); }
+            10% { opacity: 1; transform: translateY(0) scale(1); }
+            85% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-30px) scale(0.9); filter: blur(4px); }
+        }
+
         /* --- Header --- */
         .royal-header {
             position: fixed;
             top: 0; left: 0; width: 100%;
             padding: 12px 18px;
-            background: rgba(36, 11, 54, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 100;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--glass-border);
-            box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 5px 30px rgba(0,0,0,0.8);
         }
 
         .user-profile {
             display: flex; 
             align-items: center; 
-            gap: 10px;
+            gap: 12px;
         }
 
         .user-avatar {
-            width: 44px; height: 44px;
-            border-radius: 12px;
+            width: 46px; height: 46px;
+            border-radius: 14px;
             object-fit: cover;
-            border: 2px solid var(--gold-primary);
-            box-shadow: 0 0 10px var(--gold-glow);
+            border: 2px solid var(--gold-secondary);
+            box-shadow: 0 0 15px var(--gold-glow);
         }
 
         .user-details h3 { 
             font-size: 15px; 
             font-weight: 700; 
             line-height: 1.1; 
+            color: var(--text-gold);
         }
 
         /* Energy Bar */
         .energy-container { 
             display: flex; 
             align-items: center; 
-            gap: 5px; 
-            margin-top: 3px; 
+            gap: 6px; 
+            margin-top: 4px; 
         }
 
         .energy-icon { 
             font-size: 12px; 
-            color: var(--neon-blue); 
         }
 
         .energy-bar-bg { 
-            width: 60px; height: 6px; 
-            background: rgba(0,0,0,0.5); 
+            width: 65px; height: 6px; 
+            background: rgba(255,255,255,0.1); 
             border-radius: 10px; 
             overflow: hidden; 
-            border: 1px solid rgba(0,210,255,0.3); 
         }
 
         .energy-bar-fill { 
             height: 100%; 
-            background: var(--neon-blue); 
+            background: var(--gold-primary); 
             width: 100%; 
-            transition: width 0.3s ease; 
-            box-shadow: 0 0 8px var(--neon-blue); 
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 0 10px var(--gold-primary); 
         }
 
         .balance-pill {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--gold-primary);
-            padding: 5px 12px;
+            background: var(--gold-gradient-dark);
+            padding: 2px;
             border-radius: 30px;
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        .balance-inner {
+            background: var(--bg-dark);
+            padding: 6px 14px;
+            border-radius: 28px;
             text-align: right;
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
 
         .balance-amount { 
-            font-size: 15px; 
-            font-weight: 700; 
+            font-size: 16px; 
+            font-weight: 800; 
             color: var(--gold-primary); 
-            transition: all 0.3s ease; 
         }
 
         .balance-label { 
             font-size: 9px; 
-            color: var(--text-lavender); 
+            color: var(--text-muted); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* --- Layout --- */
         .container {
-            padding: 85px 16px 20px 16px; 
+            padding: 95px 16px 20px 16px; 
             max-width: 500px;
             margin: 0 auto;
         }
 
         .page { 
             display: none; 
-            animation: fadeIn 0.4s ease; 
+            animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
         }
 
         .page.active { 
             display: block; 
         }
 
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
+        @keyframes pageFadeIn { 
+            from { opacity: 0; transform: translateY(15px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
 
@@ -170,55 +212,76 @@
         .glass-card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 16px;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 18px;
             backdrop-filter: var(--glass-blur);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
             position: relative;
             overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: ''; position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.05), transparent);
+            transform: skewX(-20deg);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
         }
 
         .card-header {
             display: flex; 
             align-items: center; 
-            gap: 8px; 
-            margin-bottom: 12px;
+            gap: 10px; 
+            margin-bottom: 15px;
         }
 
         .card-header h2 { 
-            font-size: 17px; 
-            font-weight: 600; 
-            color: var(--text-white); 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--text-gold); 
         }
 
         .card-icon { 
-            font-size: 18px; 
+            font-size: 20px; 
         }
 
         .btn {
-            width: 100%; padding: 14px;
-            border: none; border-radius: 14px;
-            font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: 0.2s;
+            width: 100%; padding: 15px;
+            border: none; border-radius: 16px;
+            font-size: 14px; font-weight: 800;
+            cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; align-items: center; 
             justify-content: center; gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .btn-gold {
             background: var(--gold-gradient);
-            color: #240b36;
-            box-shadow: 0 5px 15px var(--gold-glow);
+            color: #000;
+            box-shadow: 0 5px 20px var(--gold-glow);
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
         }
 
         .btn-green {
-            background: linear-gradient(45deg, #00e676, #00c853);
+            background: linear-gradient(45deg, #00FF7F, #00C853);
             color: #000;
-            box-shadow: 0 5px 15px var(--neon-green-glow);
+            box-shadow: 0 5px 20px var(--neon-green-glow);
         }
 
         .btn-glass {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             color: var(--text-white);
             border: 1px solid var(--glass-border);
         }
@@ -226,17 +289,19 @@
         .btn:disabled { 
             opacity: 0.5; 
             cursor: not-allowed; 
+            transform: none;
+            box-shadow: none;
         }
 
         .btn:active:not(:disabled) { 
-            transform: scale(0.97); 
+            transform: scale(0.96); 
         }
 
         .btn-sm { 
-            padding: 6px 14px; 
-            font-size: 11px; 
+            padding: 8px 16px; 
+            font-size: 12px; 
             border-radius: 20px; 
-            font-weight: 700; 
+            font-weight: 800; 
             border: none; 
             cursor: pointer; 
         }
@@ -244,297 +309,180 @@
         /* --- Floating Animation (Optimistic UI Effect) --- */
         .floating-text {
             position: fixed; 
-            color: var(--neon-green); 
+            color: var(--gold-primary); 
             font-weight: 800; 
-            font-size: 20px; 
+            font-size: 22px; 
             pointer-events: none; 
-            z-index: 9999; 
-            animation: floatUp 1s ease-out forwards;
-            text-shadow: 0 0 10px var(--neon-green);
+            z-index: 99999; 
+            animation: floatUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            text-shadow: 0 0 15px var(--gold-primary);
         }
 
         @keyframes floatUp { 
-            0% { opacity: 1; transform: translateY(0); } 
-            100% { opacity: 0; transform: translateY(-50px); } 
+            0% { opacity: 1; transform: translateY(0) scale(1); } 
+            100% { opacity: 0; transform: translateY(-60px) scale(1.2); } 
         }
 
-        /* --- Daily Check-in --- */
-        .checkin-grid { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-top: 10px; 
+        /* --- Task Ghost Flight Animation --- */
+        .fly-away {
+            animation: ghostFly 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+            pointer-events: none;
         }
 
-        .day-box {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 700; color: var(--text-muted);
-        }
-
-        .day-box.active {
-            background: var(--gold-gradient);
-            color: #240b36;
-            border: none;
-            box-shadow: 0 0 10px var(--gold-glow);
-        }
-
-        /* --- Home Milestone Card --- */
-        .home-milestone-card {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
-            border: 1px solid var(--gold-primary); 
-            border-radius: 20px; 
-            padding: 20px; 
-            margin-bottom: 16px;
-        }
-
-        .milestone-progress-container { 
-            margin: 15px 0; 
-        }
-
-        .milestone-bar-bg { 
-            width: 100%; height: 10px; 
-            background: rgba(255,255,255,0.1); 
-            border-radius: 10px; overflow: hidden; 
-        }
-
-        .milestone-bar-fill { 
-            height: 100%; background: var(--gold-gradient); 
-            width: 0%; transition: width 0.5s ease; 
-        }
-
-        .milestone-stats { 
-            display: flex; justify-content: space-between; 
-            font-size: 12px; margin-top: 8px; color: var(--text-muted); 
+        @keyframes ghostFly {
+            0% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+            40% { opacity: 0.8; transform: scale(1.05) translateY(-10px); background: rgba(255, 215, 0, 0.2); }
+            100% { opacity: 0; transform: scale(0.8) translateY(-60px); filter: blur(10px); }
         }
 
         /* --- Stats --- */
         .stats-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            margin-bottom: 12px; 
+            gap: 15px; 
+            margin-bottom: 18px; 
         }
 
         .stat-item {
-            background: rgba(0,0,0,0.2); 
-            border-radius: 16px; 
-            padding: 12px;
+            background: rgba(0,0,0,0.4); 
+            border-radius: 20px; 
+            padding: 16px;
             text-align: center; 
             border: 1px solid var(--glass-border);
+            box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.02);
         }
 
         .stat-val { 
-            font-size: 18px; 
-            font-weight: 700; 
+            font-size: 20px; 
+            font-weight: 800; 
             color: var(--text-white); 
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
 
         .stat-label { 
             font-size: 10px; 
-            color: var(--text-lavender); 
+            color: var(--gold-secondary); 
             text-transform: uppercase; 
-            margin-top: 2px; 
+            margin-top: 4px; 
+            letter-spacing: 1px;
         }
 
         /* --- Task Lists --- */
         .task-item {
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(255,255,255,0.03); padding: 12px 14px;
-            border-radius: 14px; margin-bottom: 10px; border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.02); padding: 14px 16px;
+            border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--glass-border);
+            transition: all 0.3s;
         }
 
         .task-left { 
-            display: flex; align-items: center; gap: 12px; 
+            display: flex; align-items: center; gap: 14px; 
         }
 
         .task-icon { 
-            width: 36px; height: 36px; border-radius: 10px; 
+            width: 40px; height: 40px; border-radius: 12px; 
             background: rgba(255,215,0,0.1); color: var(--gold-primary);
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
         }
 
         .task-meta h4 { 
-            font-size: 13px; font-weight: 600; color: var(--text-white); 
+            font-size: 14px; font-weight: 700; color: var(--text-white); 
         }
 
         .task-meta span { 
-            font-size: 11px; color: var(--gold-primary); font-weight: 700; 
+            font-size: 11px; color: var(--gold-secondary); font-weight: 600; 
         }
 
-        /* --- P2P Card --- */
-        .p2p-card {
-            background: linear-gradient(45deg, #1a0625, #001f3f); 
-            border: 1px solid var(--neon-blue);
-            border-radius: 16px; padding: 20px; text-align: center; 
-            margin-bottom: 15px; position: relative; overflow: hidden;
-        }
-
-        .p2p-badge { 
-            position: absolute; top: 10px; right: -25px; 
-            background: var(--neon-blue); color: #000; 
-            font-size: 9px; font-weight: 800; padding: 4px 30px; 
-            transform: rotate(45deg); 
-        }
-
-        /* --- Leaderboard (Medal Style) --- */
+        /* --- Leaderboard --- */
         .rank-row {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 12px; margin-bottom: 8px; border-radius: 14px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 14px; margin-bottom: 10px; border-radius: 18px;
+            background: rgba(20, 20, 20, 0.6); border: 1px solid var(--glass-border);
         }
         
         .rank-1 { 
             background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); 
             border: 1px solid var(--gold-primary);
-            box-shadow: 0 0 15px rgba(255,215,0,0.1);
-        }
-
-        .rank-2 { 
-            background: linear-gradient(90deg, rgba(224, 224, 224, 0.1), transparent); 
-            border: 1px solid var(--silver);
-        }
-
-        .rank-3 { 
-            background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent); 
-            border: 1px solid var(--bronze);
+            box-shadow: 0 0 20px rgba(255,215,0,0.15);
         }
 
         .rank-idx { 
-            width: 30px; font-weight: 800; font-size: 16px; 
+            width: 35px; font-weight: 800; font-size: 18px; 
             color: var(--text-muted); text-align: center; 
         }
 
-        .rank-1 .rank-idx { color: var(--gold-primary); font-size: 20px; }
-        .rank-2 .rank-idx { color: var(--silver); font-size: 18px; }
-        .rank-3 .rank-idx { color: var(--bronze); font-size: 18px; }
+        .rank-1 .rank-idx { color: var(--gold-primary); font-size: 24px; text-shadow: 0 0 10px var(--gold-primary); }
+        .rank-2 .rank-idx { color: var(--silver); font-size: 20px; }
+        .rank-3 .rank-idx { color: var(--bronze); font-size: 20px; }
 
-        .rank-user { 
-            display: flex; align-items: center; gap: 10px; flex: 1; 
-        }
+        .rank-user { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .rank-user img { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--gold-secondary); }
+        .rank-score { font-weight: 800; color: var(--gold-primary); font-size: 14px; }
 
-        .rank-user img { 
-            width: 32px; height: 32px; border-radius: 50%; object-fit: cover; 
-        }
+        /* --- Withdraw Screen Inputs --- */
+        .balance-display-lg { text-align: center; margin: 25px 0; }
+        .balance-lg-val { font-size: 42px; font-weight: 800; color: var(--gold-primary); text-shadow: 0 0 25px var(--gold-glow); }
+        .balance-lg-fiat { font-size: 16px; color: var(--neon-green); font-weight: 700; margin-top: 5px; }
 
-        .rank-score { 
-            font-weight: 700; color: var(--gold-primary); font-size: 13px; 
-        }
-
-        /* --- Currency Switcher & Withdraw --- */
-        .currency-selector-container {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        .currency-select {
-            background: rgba(0,0,0,0.4);
-            color: var(--text-white);
-            border: 1px solid var(--gold-primary);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 12px;
-            outline: none;
-            font-weight: 600;
-        }
-        
-        .balance-display-lg {
-            text-align: center; margin: 20px 0;
-        }
-
-        .balance-lg-val { 
-            font-size: 36px; font-weight: 800; 
-            color: var(--text-white); 
-            text-shadow: 0 0 20px rgba(255,255,255,0.3); 
-        }
-
-        .balance-lg-fiat { 
-            font-size: 16px; color: var(--neon-green); 
-            font-weight: 600; margin-top: 5px; 
-        }
-
-        .input-group label { 
-            display: block; font-size: 11px; 
-            color: var(--text-muted); margin-bottom: 6px; 
-        }
-
+        .input-group label { display: block; font-size: 12px; color: var(--gold-secondary); margin-bottom: 8px; font-weight: 600; }
         .input-field {
-            width: 100%; background: rgba(0,0,0,0.3); 
-            border: 1px solid var(--glass-border);
-            padding: 14px; border-radius: 12px; 
-            color: white; font-size: 14px; outline: none; margin-bottom: 15px;
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border);
+            padding: 16px; border-radius: 16px; color: white; font-size: 14px; outline: none; margin-bottom: 18px;
+            transition: 0.3s;
         }
-
-        .input-field:focus { 
-            border-color: var(--neon-green); 
-        }
+        .input-field:focus { border-color: var(--gold-primary); box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); }
 
         /* --- Floating Bottom Nav --- */
         .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; 
-            transform: translateX(-50%);
-            width: 92%; max-width: 450px;
-            background: rgba(20, 20, 20, 0.9);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 10px 20px;
-            display: flex; justify-content: space-between; 
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            z-index: 999;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 450px;
+            background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(25px);
+            border-radius: 30px; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.8);
+            z-index: 1000;
         }
         
         .nav-btn {
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
-            color: #888; transition: 0.3s; 
-            position: relative; width: 50px; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #666; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative; width: 55px; cursor: pointer;
         }
 
-        .nav-btn svg { 
-            width: 22px; height: 22px; margin-bottom: 4px; 
-        }
-
-        .nav-btn span { 
-            font-size: 9px; font-weight: 600; 
-        }
+        .nav-btn svg { width: 24px; height: 24px; margin-bottom: 5px; transition: 0.3s; }
+        .nav-btn span { font-size: 10px; font-weight: 700; }
         
-        .nav-btn.active { 
-            color: var(--gold-primary); 
-        }
+        .nav-btn.active { color: var(--gold-primary); transform: translateY(-5px); }
+        .nav-btn.active svg { filter: drop-shadow(0 0 10px var(--gold-primary)); }
 
-        .nav-btn.active svg { 
-            filter: drop-shadow(0 0 8px var(--gold-primary)); 
-        }
-
-        /* --- Modal --- */
+        /* --- Premium Modal --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
             z-index: 2000; display: none; align-items: center; justify-content: center;
         }
 
         .modal-content {
-            background: #1a0625; border: 1px solid var(--gold-primary);
-            width: 85%; max-width: 320px; padding: 25px; border-radius: 20px;
-            text-align: center; transform: scale(0.9); opacity: 0; transition: 0.3s;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+            background: var(--bg-dark); border: 1px solid var(--gold-primary);
+            width: 85%; max-width: 340px; padding: 30px 25px; border-radius: 28px;
+            text-align: center; transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.15);
+            background-image: var(--bg-gradient);
         }
 
-        .modal-content.show { 
-            transform: scale(1); opacity: 1; 
-        }
+        .modal-content.show { transform: scale(1); opacity: 1; }
 
     </style>
 </head>
 <body>
 
+    <div id="toastContainer"></div>
+
     <div class="royal-header">
         <div class="user-profile">
-            <img id="headerAvatar" src="https://placehold.co/100x100/240b36/FFD700?text=U" class="user-avatar">
+            <img id="headerAvatar" src="https://placehold.co/100x100/141414/FFD700?text=U" class="user-avatar">
             <div class="user-details">
                 <h3 id="headerName">Loading...</h3>
                 <div class="energy-container">
@@ -544,8 +492,10 @@
             </div>
         </div>
         <div class="balance-pill">
-            <div class="balance-amount" id="headerBalance">0</div>
-            <div class="balance-label">POINTS</div>
+            <div class="balance-inner">
+                <div class="balance-amount" id="headerBalance">0</div>
+                <div class="balance-label">Elite Points</div>
+            </div>
         </div>
     </div>
 
@@ -553,27 +503,6 @@
 
         <div id="homePage" class="page active">
             
-            <div id="homeMilestone" class="home-milestone-card">
-                <div class="card-header"><span class="card-icon">🎁</span> <h2>Referral Rewards</h2></div>
-                <div id="milestoneContent">
-                    <p style="font-size: 12px; color: var(--text-muted);">Loading milestones...</p>
-                </div>
-            </div>
-
-            <div class="glass-card">
-                <div class="card-header"><span class="card-icon">📅</span> <h2>Daily Rewards</h2></div>
-                <div class="checkin-grid" id="dailyCheckinList">
-                    <div class="day-box active">1</div>
-                    <div class="day-box">2</div>
-                    <div class="day-box">3</div>
-                    <div class="day-box">4</div>
-                    <div class="day-box">5</div>
-                    <div class="day-box">6</div>
-                    <div class="day-box" style="color:var(--gold-primary);">🎁</div>
-                </div>
-                <p style="font-size:11px; text-align:center; color:var(--text-muted); margin-top:10px;">Reset at 00:00 UTC</p>
-            </div>
-
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-val" id="statsTotalEarn">0</div>
@@ -585,7 +514,7 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-val" id="statsRefers">0</div>
-                    <div class="stat-label">Friends</div>
+                    <div class="stat-label">Network</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-val" id="statsTotalViews">0</div>
@@ -594,29 +523,23 @@
             </div>
 
             <div class="glass-card" style="border-color: var(--gold-primary); text-align: center;">
-                <div style="font-size:30px; margin-bottom: 10px;">🚀</div>
-                <h2 style="color:var(--gold-primary); margin-bottom: 10px;">Ready to Earn?</h2>
-                <p style="font-size:12px; color:var(--text-lavender); margin-bottom:15px;">
-                    Watch ads and complete tasks to grow your balance. Costs ⚡Energy per task.
+                <div style="font-size:35px; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));">👑</div>
+                <h2 style="color:var(--gold-primary); margin-bottom: 12px; font-size: 22px;">Premium Arcade</h2>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+                    Complete high-paying tasks and watch ads to boost your Elite Balance.
                 </p>
-                <button class="btn btn-gold" onclick="navigateToPage('adsPage')">Open Arcade</button>
+                <button class="btn btn-gold" onclick="navigateToPage('adsPage')">Start Earning</button>
             </div>
         </div>
 
         <div id="adsPage" class="page">
             <div class="glass-card">
-                <div class="card-header"><span class="card-icon">📺</span> <h2>Watch & Earn</h2></div>
+                <div class="card-header"><span class="card-icon">🎯</span> <h2>Daily & Premium Tasks</h2></div>
+                <p style="font-size:11px; color:var(--text-muted); margin-bottom:15px;">Tasks reset at Midnight. Complete them before they expire.</p>
                 
-                <div class="task-item">
-                    <div class="task-left">
-                        <div class="task-icon">⚡</div>
-                        <div class="task-meta">
-                            <h4>Standard Ad</h4>
-                            <span>+<span id="adPointsStd">10</span> Pts (Cost: 10⚡)</span>
-                        </div>
-                    </div>
-                    <button class="btn-sm btn-gold" id="btnStandardAd">Watch</button>
-                </div>
+                <div id="dynamicTasksList"></div>
+                
+                <hr style="border:0; border-top:1px solid var(--glass-border); margin: 20px 0;">
 
                 <div class="task-item" style="border-color:var(--gold-primary); background:rgba(255, 215, 0, 0.05);">
                     <div class="task-left">
@@ -629,18 +552,13 @@
                     <button class="btn-sm btn-gold" id="btnBonusAd">Claim</button>
                 </div>
             </div>
-
-            <div class="glass-card">
-                <div class="card-header"><span class="card-icon">📝</span> <h2>Wall Tasks</h2></div>
-                <div id="dynamicTasksList"></div>
-            </div>
         </div>
 
         <div id="leaderboardPage" class="page">
-            <div style="text-align:center; margin-bottom:20px;">
-                <div style="font-size:40px; margin-bottom:5px;">🏆</div>
-                <h2 style="color:var(--gold-primary);">Top Earners</h2>
-                <p style="font-size:12px; color:var(--neon-green);">Updates automatically</p>
+            <div style="text-align:center; margin-bottom:25px;">
+                <div style="font-size:45px; margin-bottom:10px; filter: drop-shadow(0 0 15px rgba(255,215,0,0.4));">🏆</div>
+                <h2 style="color:var(--gold-primary); font-size: 24px;">Global Elite</h2>
+                <p style="font-size:12px; color:var(--gold-secondary);">Top earners ranking</p>
             </div>
             
             <div id="leaderboardList" style="padding-bottom: 20px;">
@@ -650,93 +568,64 @@
 
         <div id="withdrawPage" class="page">
             
-            <div class="p2p-card">
-                <div class="p2p-badge">SOON</div>
-                <div style="font-size:24px; margin-bottom:5px;">🤝</div>
-                <h3 style="color:var(--neon-blue); margin-bottom:5px;">P2P Trading Market</h3>
-                <p style="font-size:11px; color:var(--text-muted);">Buy and sell your points directly with other users securely.</p>
-            </div>
-
-            <div class="currency-selector-container">
-                <select id="globalCurrencySelector" class="currency-select" onchange="updateCurrencyDisplay()">
-                    <option value="USD" selected>🇺🇸 USD (Dollar)</option>
-                    <option value="BDT">🇧🇩 BDT (Taka)</option>
-                    <option value="INR">🇮🇳 INR (Rupee)</option>
-                    <option value="PKR">🇵🇰 PKR (Rupee)</option>
-                    <option value="NGN">🇳🇬 NGN (Naira)</option>
-                    <option value="EUR">🇪🇺 EUR (Euro)</option>
-                </select>
-            </div>
-
-            <div class="glass-card" style="text-align:center; padding: 30px 20px;">
-                <div style="font-size:12px; color:var(--text-lavender); text-transform:uppercase; letter-spacing:1px;">Available Balance</div>
+            <div class="glass-card" style="text-align:center; padding: 35px 20px;">
+                <div style="font-size:13px; color:var(--gold-secondary); text-transform:uppercase; letter-spacing:2px; font-weight:700;">Available Balance</div>
                 <div class="balance-display-lg">
                     <div class="balance-lg-val" id="withdrawBalanceDisplay">0</div>
                     <div class="balance-lg-fiat" id="withdrawFiatDisplay">$0.00 USD</div>
                 </div>
-                <div style="font-size:11px; color:var(--text-muted);" id="dynamicPriceText">Exchange Rate Loading...</div>
+                <div style="font-size:11px; color:var(--text-muted); background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 20px; display:inline-block;" id="dynamicPriceText">Exchange Rate Loading...</div>
             </div>
 
             <div class="glass-card">
-                <div class="card-header"><span class="card-icon">💸</span> <h2>Cash Out</h2></div>
+                <div class="card-header"><span class="card-icon">🏛️</span> <h2>Secure Withdrawal</h2></div>
                 
                 <div class="input-group">
                     <label>Payment Method</label>
-                    <select id="withdrawMethod" class="input-field" style="background:rgba(0,0,0,0.5);">
-                        <option>Loading...</option>
+                    <select id="withdrawMethod" class="input-field">
+                        <option>Loading methods...</option>
                     </select>
                 </div>
 
                 <div class="input-group">
-                    <label>Wallet Address / Number</label>
-                    <input type="text" id="withdrawAddress" class="input-field" placeholder="e.g. 017xxxxxxxx">
+                    <label>Wallet Address / Details</label>
+                    <input type="text" id="withdrawAddress" class="input-field" placeholder="Enter secure address">
                 </div>
 
                 <div class="input-group">
                     <label>Amount (Points)</label>
-                    <input type="number" id="withdrawAmountInput" class="input-field" placeholder="Min 5000">
+                    <input type="number" id="withdrawAmountInput" class="input-field" placeholder="Minimum threshold applies">
                 </div>
 
-                <button class="btn btn-green" id="btnSubmitWithdraw">REQUEST WITHDRAWAL</button>
+                <button class="btn btn-gold" id="btnSubmitWithdraw">Process Withdrawal</button>
             </div>
 
             <div class="glass-card">
-                <div class="card-header"><span class="card-icon">📜</span> <h2>History</h2></div>
+                <div class="card-header"><span class="card-icon">📜</span> <h2>Transaction History</h2></div>
                 <div id="withdrawHistory"></div>
             </div>
         </div>
 
         <div id="profilePage" class="page">
-            <div class="glass-card" style="text-align:center; padding-top:30px;">
-                <img id="profilePageAvatar" src="" class="user-avatar" style="width:80px; height:80px; margin-bottom:15px;">
-                <h2 id="profilePageName" style="margin-bottom:5px;">User</h2>
+            <div class="glass-card" style="text-align:center; padding-top:35px;">
+                <img id="profilePageAvatar" src="" class="user-avatar" style="width:90px; height:90px; margin-bottom:20px; border-width: 3px;">
+                <h2 id="profilePageName" style="margin-bottom:5px; color:var(--text-gold); font-size:22px;">User</h2>
             </div>
 
             <div class="glass-card">
-                <div class="card-header"><span class="card-icon">🎯</span> <h2>Referral Milestones</h2></div>
-                <p style="font-size:11px; color:var(--text-muted); margin-bottom:15px;">
-                    Invite friends and unlock massive bonus rewards!
+                <div class="card-header"><span class="card-icon">🤝</span> <h2>Elite Referral Program</h2></div>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">
+                    Invite premium users and grow your network.
                 </p>
-                <div id="milestoneList">
-                    </div>
-            </div>
-
-            <div class="glass-card">
-                <div class="card-header"><span class="card-icon">🤝</span> <h2>Your Invite Link</h2></div>
                 
-                <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-family:monospace; color:var(--gold-primary); word-break:break-all; font-size:12px; border:1px solid var(--glass-border); margin-bottom:12px;" id="referLinkBox">
+                <div style="background:rgba(0,0,0,0.6); padding:15px; border-radius:14px; font-family:monospace; color:var(--gold-primary); word-break:break-all; font-size:13px; border:1px solid var(--glass-border); margin-bottom:15px; text-align:center;" id="referLinkBox">
                     Loading link...
                 </div>
                 
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                     <button class="btn btn-gold" id="btnCopyRef">Copy Link</button>
-                    <button class="btn btn-glass" id="btnShareRef">Share</button>
+                    <button class="btn btn-glass" id="btnShareRef">Share via TG</button>
                 </div>
-            </div>
-            
-             <div class="glass-card">
-                <div class="card-header"><span class="card-icon">💬</span> <h2>Support</h2></div>
-                <div id="supportList"></div>
             </div>
         </div>
 
@@ -749,7 +638,7 @@
         </div>
         <div class="nav-btn" onclick="navigateToPage('adsPage')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2z"/></svg>
-            <span>Tasks</span>
+            <span>Earn</span>
         </div>
         <div class="nav-btn" onclick="navigateToPage('leaderboardPage')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
@@ -757,7 +646,7 @@
         </div>
         <div class="nav-btn" onclick="navigateToPage('withdrawPage')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            <span>Wallet</span>
+            <span>Vault</span>
         </div>
         <div class="nav-btn" onclick="navigateToPage('profilePage')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -767,36 +656,26 @@
 
     <div class="modal-overlay" id="customModal">
         <div class="modal-content" id="modalBox">
-            <div style="font-size:40px; margin-bottom:10px;" id="modalIcon">🎉</div>
-            <h3 id="modalTitle" style="color:var(--gold-primary); margin-bottom:10px;">Success</h3>
-            <p id="modalMsg" style="color:var(--text-lavender); margin-bottom:20px; font-size:13px;">Action completed.</p>
+            <div style="font-size:50px; margin-bottom:15px; filter:drop-shadow(0 0 10px rgba(255,215,0,0.5));" id="modalIcon">🎉</div>
+            <h3 id="modalTitle" style="color:var(--gold-primary); margin-bottom:10px; font-size:22px;">Success</h3>
+            <p id="modalMsg" style="color:var(--text-muted); margin-bottom:25px; font-size:14px; line-height:1.4;">Action completed.</p>
             <button class="btn btn-gold" onclick="closeModal()">Awesome</button>
         </div>
     </div>
 
     <script>
-        // Telegram Web App Initialization
+        // --- Telegram Web App Init ---
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.setHeaderColor('#240b36');
-        tg.setBackgroundColor('#240b36');
+        tg.setHeaderColor('#050505');
+        tg.setBackgroundColor('#050505');
 
-        // *** CONFIGURATION ***
+        // --- CONFIG ---
         const BOT_USERNAME = "Fre_e_Cash_Bot"; 
         const SHORT_NAME = "app"; 
-        
-        // *** GLOBAL CURRENCY RATES (Base: USD) ***
-        const CURRENCY_RATES = {
-            'USD': { rate: 1, symbol: '$' },
-            'BDT': { rate: 120, symbol: '৳' },
-            'INR': { rate: 86, symbol: '₹' },
-            'PKR': { rate: 278, symbol: '₨' },
-            'NGN': { rate: 1600, symbol: '₦' },
-            'EUR': { rate: 0.92, symbol: '€' }
-        };
 
-        // *** FIREBASE INITIALIZATION ***
+        // --- FIREBASE INIT ---
         const firebaseConfig = {
             apiKey: "AIzaSyAolXMVYn7nLGUz4krYCHHgkBgkBRH4Djk",
             authDomain: "earnerx-506e1.firebaseapp.com",
@@ -806,11 +685,10 @@
             messagingSenderId: "868867404959",
             appId: "1:868867404959:web:c98447df696a9877bf5eaa"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // *** GLOBAL STATE VARIABLES ***
+        // --- STATE ---
         let dbUser = null;
         let appConfig = null;
         let localBalance = 0;
@@ -820,9 +698,7 @@
         const MAX_ENERGY = 100;
 
         // --- Core Utils ---
-        function formatNumber(num) {
-            return (num || 0).toLocaleString();
-        }
+        function formatNumber(num) { return (num || 0).toLocaleString(); }
 
         function showFloatingText(text, x, y) {
             const el = document.createElement('div');
@@ -834,70 +710,56 @@
             setTimeout(() => el.remove(), 1000);
         }
 
-        // *** BOT NOTIFICATION FUNCTION ***
-        async function notifyBot(userId, message) {
-            if(!appConfig || !appConfig.botToken) return;
-            const url = `https://api.telegram.org/bot${appConfig.botToken}/sendMessage`;
-            try {
-                await fetch(url, {
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: userId, text: message, parse_mode: "HTML" })
+        // --- FAKE LIVE WITHDRAWALS ---
+        const fakeNames = ['Nahid***', 'Siyam***', 'Yusuf***', 'Rahim***', 'Nabila***', 'Hasan***', 'Ray***'];
+        function startFakeLiveActivity() {
+            setInterval(() => {
+                const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+                const amt = (Math.floor(Math.random() * 20) + 5) * 500;
+                
+                const toast = document.createElement('div');
+                toast.className = 'live-toast';
+                toast.innerHTML = `<span style="font-size:14px;">💸</span> ${name} withdrew ${formatNumber(amt)} Pts!`;
+                
+                const container = document.getElementById('toastContainer');
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 4000);
+            }, 15000);
+        }
+
+        // --- MIDNIGHT RESET LOGIC (Local Storage) ---
+        function checkMidnightReset() {
+            const lastDate = localStorage.getItem('lastTaskDate');
+            const today = new Date().toDateString();
+            if(lastDate !== today) {
+                Object.keys(localStorage).forEach(key => {
+                    if(key.startsWith('task_daily_')) localStorage.removeItem(key);
                 });
-            } catch(e) { 
-                console.log("Bot notification failed"); 
+                localStorage.setItem('lastTaskDate', today);
             }
         }
 
-        // *** DATA SYNC (Optimistic Update to Server) ***
+        // --- SERVER SYNC ---
         async function syncWithServer() {
             if(!dbUser || (unsyncedPoints === 0 && unsyncedEnergyUsed === 0)) return;
-            
-            const pointsToSync = unsyncedPoints;
-            const energyToSync = unsyncedEnergyUsed;
-            
-            // Reset trackers to avoid double counting
-            unsyncedPoints = 0; 
-            unsyncedEnergyUsed = 0;
+            const pts = unsyncedPoints;
+            const nrg = unsyncedEnergyUsed;
+            unsyncedPoints = 0; unsyncedEnergyUsed = 0;
 
             try {
                 await db.collection('users').doc(dbUser.userId).update({
-                    balance: firebase.firestore.FieldValue.increment(pointsToSync),
-                    totalEarnings: firebase.firestore.FieldValue.increment(pointsToSync),
-                    energy: firebase.firestore.FieldValue.increment(-energyToSync)
+                    balance: firebase.firestore.FieldValue.increment(pts),
+                    totalEarnings: firebase.firestore.FieldValue.increment(pts),
+                    energy: firebase.firestore.FieldValue.increment(-nrg)
                 });
             } catch(e) {
-                // Restore values if transaction fails
-                unsyncedPoints += pointsToSync;
-                unsyncedEnergyUsed += energyToSync;
-                console.error("Sync failed:", e);
+                unsyncedPoints += pts; unsyncedEnergyUsed += nrg;
             }
         }
-        
-        // Setup Auto Sync Interval (Every 20 Seconds)
-        setInterval(syncWithServer, 20000);
-        
-        // Sync when user closes or leaves the web app
-        window.addEventListener('beforeunload', () => { 
-            syncWithServer(); 
-        });
+        setInterval(syncWithServer, 15000);
+        window.addEventListener('beforeunload', syncWithServer);
 
-        // *** CURRENCY DISPLAY LOGIC ***
-        function updateCurrencyDisplay() {
-            if(!dbUser || !appConfig) return;
-            
-            const selectedCurr = document.getElementById('globalCurrencySelector').value;
-            const currencyData = CURRENCY_RATES[selectedCurr] || CURRENCY_RATES['USD'];
-            
-            const pointsPerDollar = appConfig.dollarExchangeRate || 10000; 
-            const balanceUSD = localBalance / pointsPerDollar;
-            const convertedValue = balanceUSD * currencyData.rate;
-            
-            document.getElementById('withdrawFiatDisplay').innerText = 
-                `${currencyData.symbol}${convertedValue.toFixed(2)} ${selectedCurr}`;
-        }
-
-        // --- Navigation Logic ---
+        // --- NAVIGATION ---
         function navigateToPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -906,291 +768,144 @@
 
             document.querySelectorAll('.nav-btn').forEach(item => {
                 item.classList.remove('active');
-                if(item.getAttribute('onclick').includes(pageId)) {
-                    item.classList.add('active');
-                }
+                if(item.getAttribute('onclick').includes(pageId)) item.classList.add('active');
             });
             tg.HapticFeedback.selectionChanged();
         }
 
-        // --- UI REFRESH (Master Update Function) ---
+        // --- UI REFRESH ---
         function refreshUI() {
             if(!dbUser || !appConfig) return;
+            checkMidnightReset(); 
             
-            // Apply optimistic data
             localBalance = dbUser.balance + unsyncedPoints;
             localEnergy = (dbUser.energy !== undefined ? dbUser.energy : MAX_ENERGY) - unsyncedEnergyUsed;
-            
+            const avatarUrl = dbUser.photo_url || "https://placehold.co/100x100/141414/FFD700?text=U";
             const fullName = `${dbUser.first_name} ${dbUser.last_name || ''}`.trim();
-            const avatarUrl = dbUser.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
             
-            // Update Header & Energy Bar
+            // Head
             document.getElementById('headerName').innerText = fullName.substring(0, 12);
             document.getElementById('headerBalance').innerText = formatNumber(localBalance);
             document.getElementById('headerEnergyBar').style.width = `${(localEnergy/MAX_ENERGY)*100}%`;
             document.getElementById('headerAvatar').src = avatarUrl;
             
-            // Update Profile Page Data
+            // Profile
             document.getElementById('profilePageName').innerText = fullName;
             document.getElementById('profilePageAvatar').src = avatarUrl;
 
-            // Update Home Stats Grid
+            // Stats
             document.getElementById('statsEnergy').innerText = `${localEnergy}/${MAX_ENERGY}`;
             document.getElementById('statsTotalEarn').innerText = formatNumber((dbUser.totalEarnings || 0) + unsyncedPoints);
             document.getElementById('statsRefers').innerText = dbUser.referredUsersCount || 0;
             document.getElementById('statsTotalViews').innerText = dbUser.totalTasksCompleted || 0;
 
-            // Update Ads Page Points Display
-            document.getElementById('adPointsStd').innerText = appConfig.standardAdPoints || 10;
+            // Ads
             document.getElementById('adPointsBonus').innerText = appConfig.bonusAdPoints || 20;
             
-            // Update Withdraw Page Balance & Rates
+            // Withdraw
             document.getElementById('withdrawBalanceDisplay').innerText = formatNumber(localBalance);
             const rateUSD = appConfig.dollarExchangeRate || 10000;
-            document.getElementById('dynamicPriceText').innerText = `Exchange Rate: ${rateUSD} Pts = $1.00 USD`;
-            updateCurrencyDisplay(); 
+            document.getElementById('dynamicPriceText').innerText = `Rate: ${rateUSD} Pts = $1.00`;
+            document.getElementById('withdrawFiatDisplay').innerText = `$${(localBalance / rateUSD).toFixed(2)} USD`;
 
-            // Render Dynamic Sections
-            renderMilestoneOnHome();
-            renderMilestones();
             renderMethods();
             renderHistory();
             renderDynamicTasks();
-            renderSupport();
             
-            // Generate Referral Link
+            // Ref Link
             const link = `https://t.me/${BOT_USERNAME}/${SHORT_NAME}?startapp=ref_${dbUser.userId}`;
             document.getElementById('referLinkBox').innerText = link;
         }
 
-        // --- NEW: Home Page Milestone Tracker ---
-        function renderMilestoneOnHome() {
-            const container = document.getElementById('milestoneContent');
-            if(!appConfig.milestones || appConfig.milestones.length === 0) {
-                container.innerHTML = "<p style='font-size:12px; color:var(--text-muted);'>No active rewards currently.</p>"; 
-                return;
-            }
-
-            const refs = dbUser.referredUsersCount || 0;
-            const claimed = dbUser.claimedMilestones || [];
-            
-            // Determine the next un-claimed milestone
-            const nextMilestone = appConfig.milestones.find(m => !claimed.includes(m.required)) || appConfig.milestones[appConfig.milestones.length - 1];
-            const isAllClaimed = claimed.includes(nextMilestone.required);
-
-            const progress = Math.min(refs, nextMilestone.required);
-            const percent = (progress / nextMilestone.required) * 100;
-
-            let actionBtn = "";
-            if(isAllClaimed) {
-                actionBtn = `<button class="btn btn-glass" disabled>All Rewards Claimed ✅</button>`;
-            } else if(refs >= nextMilestone.required) {
-                actionBtn = `<button class="btn btn-gold" onclick="claimMilestone(${nextMilestone.required}, ${nextMilestone.reward})">Claim ${nextMilestone.reward} Points</button>`;
-            } else {
-                actionBtn = `<button class="btn btn-glass" onclick="navigateToPage('profilePage')">Invite ${nextMilestone.required - refs} more to unlock</button>`;
-            }
-
-            container.innerHTML = `
-                <div style="text-align:left;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <span style="font-weight:700; color:var(--gold-primary);">Next Target: ${nextMilestone.required} Refers</span>
-                        <span style="color:var(--neon-green);">+${nextMilestone.reward} Pts</span>
-                    </div>
-                    <div class="milestone-bar-bg"><div class="milestone-bar-fill" style="width:${percent}%"></div></div>
-                    <div class="milestone-stats">
-                        <span>Progress: ${progress}/${nextMilestone.required}</span>
-                        <span>${percent.toFixed(0)}%</span>
-                    </div>
-                    <div style="margin-top:15px;">${actionBtn}</div>
-                </div>
-            `;
-        }
-
-        // --- Profile Page Full Milestones List ---
-        function renderMilestones() {
-            const div = document.getElementById('milestoneList');
-            div.innerHTML = '';
-            if(!appConfig.milestones || appConfig.milestones.length === 0) { 
-                div.innerHTML = '<p style="text-align:center; font-size:12px; color:var(--text-muted);">No active milestones</p>'; 
-                return; 
-            }
-            
-            const refs = dbUser.referredUsersCount || 0;
-            const claimed = dbUser.claimedMilestones || [];
-
-            appConfig.milestones.forEach(m => {
-                const isClaimed = claimed.includes(m.required);
-                const progress = Math.min(refs, m.required);
-                const percent = (progress / m.required) * 100;
-                
-                let actionBtn = `<button class="btn-sm btn-glass" disabled>Locked</button>`;
-                if(isClaimed) {
-                    actionBtn = `<button class="btn-sm btn-glass" style="color:var(--neon-green); border-color:var(--neon-green);" disabled>Claimed ✅</button>`;
-                } else if(progress >= m.required) {
-                    actionBtn = `<button class="btn-sm btn-gold" onclick="claimMilestone(${m.required}, ${m.reward})">Claim ${m.reward}</button>`;
-                }
-
-                div.innerHTML += `
-                <div class="milestone-box">
-                    <div class="milestone-header">
-                        <span>Invite ${m.required} Friends</span>
-                        <span>🎁 ${m.reward} Pts</span>
-                    </div>
-                    <div class="milestone-bar-bg"><div class="milestone-bar-fill" style="width:${percent}%"></div></div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                        <span style="font-size:11px; color:var(--text-muted);">${progress}/${m.required} Joined</span>
-                        ${actionBtn}
-                    </div>
-                </div>`;
-            });
-        }
-
-        async function claimMilestone(target, reward) {
-            await syncWithServer(); // Sync local points before making a direct DB claim
-            const ref = db.collection('users').doc(dbUser.userId);
-            try {
-                await ref.update({
-                    balance: firebase.firestore.FieldValue.increment(reward),
-                    claimedMilestones: firebase.firestore.FieldValue.arrayUnion(target)
-                });
-                
-                showModal('Claimed!', `Bonus ${reward} points added to your balance.`, '💰');
-                
-                // Bot Notification
-                if(appConfig.botToken) {
-                    const msg = `🎉 <b>অভিনন্দন!</b>\nআপনি ${target} টি রেফার টার্গেট পূরণ করেছেন এবং <b>${reward} পয়েন্ট</b> বোনাস পেয়েছেন!\n\nKeep sharing your link! 🚀`;
-                    notifyBot(dbUser.userId, msg);
-                }
-            } catch(e) { 
-                showModal('Error', 'Failed to claim reward.', '❌'); 
-            }
-        }
-
-        // --- Leaderboard Logic (With Caching to save reads) ---
-        async function loadLeaderboardCached() {
-            const list = document.getElementById('leaderboardList');
-            const cacheData = localStorage.getItem('lb_data');
-            const cacheTime = localStorage.getItem('lb_time');
-            const now = Date.now();
-
-            // Cache valid for 24 hours
-            if(cacheData && cacheTime && (now - cacheTime < 86400000)) {
-                renderLeaderboardHTML(JSON.parse(cacheData));
-                return;
-            }
-
-            try {
-                const snap = await db.collection('users').orderBy('balance', 'desc').limit(50).get();
-                let lbArray = [];
-                snap.forEach(doc => lbArray.push(doc.data()));
-                
-                localStorage.setItem('lb_data', JSON.stringify(lbArray));
-                localStorage.setItem('lb_time', now);
-                renderLeaderboardHTML(lbArray);
-            } catch(e) {
-                list.innerHTML = '<div style="text-align:center;color:red;">Failed to load rankings</div>';
-            }
-        }
-
-        function renderLeaderboardHTML(lbArray) {
-            const list = document.getElementById('leaderboardList');
-            list.innerHTML = '';
-            
-            lbArray.forEach((u, idx) => {
-                const rank = idx + 1;
-                const isMe = u.userId === dbUser.userId;
-                const name = u.first_name + (u.last_name ? ' '+u.last_name : '');
-                const avatar = u.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
-                const score = formatNumber(u.balance);
-                
-                const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
-                
-                list.innerHTML += `
-                <div class="rank-row ${rankClass}">
-                    <div class="rank-idx">${rank}</div>
-                    <div class="rank-user">
-                        <img src="${avatar}">
-                        <div style="font-size:13px; font-weight:600; color:var(--text-white);">
-                            ${name} ${isMe ? '(You)' : ''}
-                        </div>
-                    </div>
-                    <div class="rank-score">${score}</div>
-                </div>`;
-            });
-        }
-
-        // --- Dynamic Tasks Logic (Bug Fixed) ---
+        // --- DYNAMIC TASKS (With Link Redirection and Fly Animation) ---
         function renderDynamicTasks() {
             const div = document.getElementById('dynamicTasksList');
             div.innerHTML = '';
             
-            appConfig.dynamicTasks?.forEach(task => {
-                const today = new Date().toDateString();
-                const isDone = (dbUser.completedTasks?.[task.id] === today) || (task.type === 'one-time' && dbUser.completedTasks?.[task.id] === 'completed');
+            if(!appConfig.dynamicTasks) return;
+
+            appConfig.dynamicTasks.forEach(task => {
+                const storageKey = task.type === 'one-time' ? `task_onetime_${task.id}` : `task_daily_${task.id}`;
+                
+                if(localStorage.getItem(storageKey) === 'completed') return; 
                 
                 div.innerHTML += `
-                 <div class="task-item">
+                 <div class="task-item" id="taskRow_${task.id}">
                      <div class="task-left">
-                         <div class="task-icon" style="background:#333; color:white;">🔗</div>
+                         <div class="task-icon">🌟</div>
                          <div class="task-meta">
                              <h4>${task.name}</h4>
                              <span>+${task.points} Pts (Cost: 5⚡)</span>
                          </div>
                      </div>
-                     <button class="btn-sm btn-glass" id="taskBtn_${task.id}" onclick="doTask(event, '${task.id}')" ${isDone ? 'disabled style="opacity:0.5"' : ''}>
-                        ${isDone ? 'Done' : 'Go'}
+                     <button class="btn-sm btn-gold" id="taskBtn_${task.id}" onclick="doTask(event, '${task.id}', '${task.type}')">
+                        Start
                      </button>
                  </div>`;
             });
+            
+            if(div.innerHTML === '') {
+                div.innerHTML = `<div style="text-align:center; padding: 20px; color:var(--text-muted); font-size:12px;">All tasks completed for now. Check back later!</div>`;
+            }
         }
 
-        async function doTask(event, taskId) {
+        // LINK REDIRECTION RESTORED HERE
+        function doTask(event, taskId, taskType) {
             const task = appConfig.dynamicTasks.find(t => t.id === taskId);
             if(!task) return;
             
             const cost = 5;
-            if(localEnergy < cost) {
-                return showModal('Low Energy', `You need ${cost}⚡ to do this task. Please wait for refill.`, '⚡');
-            }
+            if(localEnergy < cost) return showModal('Low Energy', `You need ${cost}⚡ to perform this task.`, '⚡');
 
-            // Immediately disable button to prevent multi-clicking
             const btn = document.getElementById(`taskBtn_${taskId}`);
-            btn.disabled = true;
-            btn.innerText = "⏳ Wait";
-
-            tg.openLink(task.link);
-            showModal('Wait...', `Please stay on the page for ${task.timer || 10} seconds to claim.`, '⏳');
+            const row = document.getElementById(`taskRow_${taskId}`);
             
-            setTimeout(async () => {
-                // Apply Optimistic Reward Locally First
+            btn.disabled = true;
+            btn.innerText = "⏳ Wait...";
+            btn.style.background = "var(--glass-bg)";
+            btn.style.color = "var(--text-muted)";
+
+            // User কে লিংকে নিয়ে যাবে
+            if(task.link) {
+                tg.openLink(task.link);
+            }
+            
+            const waitTime = (task.timer || 10) * 1000;
+
+            setTimeout(() => {
+                // Give Rewards
                 localEnergy -= cost;
                 localBalance += task.points;
                 unsyncedEnergyUsed += cost;
                 unsyncedPoints += task.points;
                 
-                showFloatingText(`+${task.points}`, event.clientX, event.clientY);
-                tg.HapticFeedback.impactOccurred('medium');
-                
-                // Ensure immediate DB update for task status so it can't be repeated
-                const ref = db.collection('users').doc(dbUser.userId);
-                const today = new Date().toDateString();
-                const taskStatus = task.type === 'one-time' ? 'completed' : today;
-                
-                // Update local dbUser object to reflect change instantly
-                if(!dbUser.completedTasks) dbUser.completedTasks = {};
-                dbUser.completedTasks[taskId] = taskStatus;
+                // Save to Local Storage Immediately
+                const storageKey = taskType === 'one-time' ? `task_onetime_${taskId}` : `task_daily_${taskId}`;
+                localStorage.setItem(storageKey, 'completed');
 
-                await ref.update({
-                    [`completedTasks.${taskId}`]: taskStatus,
-                    totalTasksCompleted: firebase.firestore.FieldValue.increment(1)
-                });
+                showFloatingText(`+${task.points}`, event.clientX || window.innerWidth/2, event.clientY || window.innerHeight/2);
+                tg.HapticFeedback.notificationOccurred('success');
                 
-                showModal('Done', `Task Completed! You earned ${task.points} points.`, '✅');
-                refreshUI(); // Re-render tasks and header
-            }, (task.timer || 10) * 1000);
+                // FLY AWAY GHOST ANIMATION
+                row.classList.add('fly-away');
+                
+                setTimeout(() => {
+                    row.remove(); 
+                    refreshUI(); 
+                }, 700);
+
+                if(dbUser) {
+                    const today = new Date().toDateString();
+                    db.collection('users').doc(dbUser.userId).update({
+                        [`completedTasks.${taskId}`]: taskType === 'one-time' ? 'completed' : today,
+                        totalTasksCompleted: firebase.firestore.FieldValue.increment(1)
+                    }).catch(()=>{}); 
+                }
+
+            }, waitTime); 
         }
 
-        // --- Ad Buttons & Monetag Logic ---
+        // --- MONETAG AD SYSTEM (Popup only) ---
         function loadMonetag(zoneId) {
              const script = document.createElement('script');
              script.src = '//libtl.com/sdk.js';
@@ -1199,62 +914,17 @@
              document.head.appendChild(script);
         }
 
-        function showAd(type = 'default') {
+        function showAd(type = 'pop') {
             return new Promise((resolve, reject) => {
                 if(!appConfig?.monetagZoneId) return reject("No Ad Config");
                 const func = window[`show_${appConfig.monetagZoneId}`];
                 if(func) {
-                    const p = type === 'pop' ? func('pop') : func();
-                    p.then(resolve).catch(reject);
+                    func(type).then(resolve).catch(reject);
                 } else {
                     reject("Ad SDK not ready");
                 }
             });
         }
-
-        document.getElementById('btnStandardAd').onclick = async function(event) {
-            const cost = 10;
-            if(localEnergy < cost) {
-                return showModal('Low Energy', `You need ${cost}⚡ to watch this ad.`, '⚡');
-            }
-            
-            const btn = this;
-            btn.innerText = 'Watching...';
-            btn.disabled = true;
-
-            const startTime = Date.now(); 
-
-            try {
-                await showAd('default');
-                const duration = Date.now() - startTime;
-                
-                if(duration < 10000) { 
-                    showModal('Failed', 'You closed the ad too early! Minimum 10 seconds required.', '⚠️');
-                    btn.innerText = 'Watch';
-                    btn.disabled = false;
-                    return; 
-                }
-
-                // Apply Optimistic Reward
-                const reward = appConfig.standardAdPoints || 10;
-                localEnergy -= cost;
-                localBalance += reward;
-                unsyncedEnergyUsed += cost;
-                unsyncedPoints += reward;
-                
-                showFloatingText(`+${reward}`, event.clientX, event.clientY);
-                tg.HapticFeedback.impactOccurred('medium');
-                refreshUI();
-                
-                btn.innerText = 'Watch';
-                btn.disabled = false;
-            } catch(e) {
-                console.log(e);
-                showModal('Error', 'Ad failed to load properly.', '❌');
-                btn.innerText = 'Watch';
-                btn.disabled = false;
-            }
-        };
 
         document.getElementById('btnBonusAd').onclick = async function(event) {
             const cost = 15;
@@ -1263,142 +933,140 @@
             }
             
             const btn = this;
-            btn.innerText = '...';
+            const originalText = btn.innerText;
+            btn.innerText = 'Loading...';
             btn.disabled = true;
 
             try {
                 await showAd('pop');
                 
-                // Apply Optimistic Reward
                 const reward = appConfig.bonusAdPoints || 20;
                 localEnergy -= cost;
                 localBalance += reward;
                 unsyncedEnergyUsed += cost;
                 unsyncedPoints += reward;
                 
-                showFloatingText(`+${reward}`, event.clientX, event.clientY);
+                showFloatingText(`+${reward}`, event.clientX || window.innerWidth/2, event.clientY || window.innerHeight/2);
                 tg.HapticFeedback.impactOccurred('medium');
                 refreshUI();
             } catch(e) {
-                showModal('Error', 'Bonus ad unavailable at the moment.', '❌');
+                showModal('Error', 'Bonus ad unavailable right now.', '❌');
             }
-            btn.innerText = 'Claim';
+            
+            btn.innerText = originalText;
             btn.disabled = false;
         };
 
-        // --- Helper Lists Logic ---
+        // --- LEADERBOARD ---
+        async function loadLeaderboardCached() {
+            const list = document.getElementById('leaderboardList');
+            try {
+                const snap = await db.collection('users').orderBy('balance', 'desc').limit(20).get();
+                list.innerHTML = '';
+                snap.forEach((doc, idx) => {
+                    const u = doc.data();
+                    const rank = idx + 1;
+                    const name = u.first_name + (u.last_name ? ' '+u.last_name : '');
+                    const avatar = u.photo_url || "https://placehold.co/100x100/141414/FFD700?text=U";
+                    const score = formatNumber(u.balance);
+                    const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+                    
+                    list.innerHTML += `
+                    <div class="rank-row ${rankClass}">
+                        <div class="rank-idx">${rank}</div>
+                        <div class="rank-user">
+                            <img src="${avatar}">
+                            <div style="font-size:13px; font-weight:700; color:var(--text-white);">
+                                ${name} ${u.userId === dbUser?.userId ? '<span style="color:var(--gold-primary);">(You)</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="rank-score">${score}</div>
+                    </div>`;
+                });
+            } catch(e) { list.innerHTML = '<div style="text-align:center;color:red;">Failed to load Elite Rankings</div>'; }
+        }
+
+        // --- WITHDRAW LOGIC ---
         function renderMethods() {
             const sel = document.getElementById('withdrawMethod');
             sel.innerHTML = '';
-            appConfig.paymentMethods?.forEach(m => {
-                sel.innerHTML += `<option value="${m.id}">${m.name} (Min: ${m.minAmount})</option>`;
-            });
+            if(appConfig.paymentMethods) {
+                appConfig.paymentMethods.forEach(m => {
+                    sel.innerHTML += `<option value="${m.id}">${m.name} (Min: ${m.minAmount})</option>`;
+                });
+            }
         }
 
         async function renderHistory() {
             const list = document.getElementById('withdrawHistory');
             list.innerHTML = '';
+            if(!dbUser) return;
             const snap = await db.collection('withdrawals').where('userId', '==', dbUser.userId).orderBy('createdAt', 'desc').limit(5).get();
             if(snap.empty) { 
-                list.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px;">No history yet.</div>'; 
-                return; 
+                list.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px;">Vault is empty.</div>'; return; 
             }
-            
             snap.forEach(doc => {
                 const d = doc.data();
-                let color = '#FFD700'; // Pending
-                if(d.status === 'Approved') color = '#00e676';
+                let color = 'var(--gold-primary)'; // Pending
+                if(d.status === 'Approved') color = 'var(--neon-green)';
                 if(d.status === 'Rejected') color = '#ff4757';
                 
                 list.innerHTML += `
-                <div class="task-item" style="border-left: 3px solid ${color}">
+                <div class="task-item" style="border-left: 3px solid ${color}; background: rgba(0,0,0,0.4);">
                     <div>
-                        <div style="font-size:13px; color:white;">${d.paymentMethodName}</div>
-                        <div style="font-size:10px; color:#888;">${formatNumber(d.amount)} Pts</div>
+                        <div style="font-size:13px; color:white; font-weight:700;">${d.paymentMethodName}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${formatNumber(d.amount)} Pts</div>
                     </div>
-                    <div style="font-size:11px; font-weight:bold; color:${color};">${d.status}</div>
+                    <div style="font-size:11px; font-weight:800; color:${color}; text-transform:uppercase;">${d.status}</div>
                 </div>`;
             });
         }
 
-        function renderSupport() {
-             const div = document.getElementById('supportList');
-             div.innerHTML = '';
-             appConfig.supportLinks?.forEach(l => {
-                 div.innerHTML += `
-                 <div class="task-item" onclick="window.open('${l.link}')">
-                     <div class="task-left">
-                         <div class="task-icon">💬</div>
-                         <h4>${l.name}</h4>
-                     </div>
-                     <span style="font-size:12px; color:var(--text-muted);">Open ></span>
-                 </div>`;
-             });
-        }
-
-        // --- Withdraw Logic ---
         document.getElementById('btnSubmitWithdraw').onclick = async function() {
-            await syncWithServer(); // Push optimistic points before checking balance
-            
+            await syncWithServer(); 
             const amt = parseInt(document.getElementById('withdrawAmountInput').value);
             const addr = document.getElementById('withdrawAddress').value;
             const methodId = document.getElementById('withdrawMethod').value;
             
-            if(!amt || !addr) return showModal('Error', 'Please fill all the fields.', '⚠️');
+            if(!amt || !addr) return showModal('Error', 'Please fill all details.', '⚠️');
             
-            // Re-fetch latest balance from DB to be ultra-safe for withdrawals
             const doc = await db.collection('users').doc(dbUser.userId).get();
             const realBalance = doc.data().balance;
 
-            if(amt > realBalance) return showModal('Error', 'Insufficient Balance for this withdrawal.', '💸');
-            
+            if(amt > realBalance) return showModal('Denied', 'Insufficient Elite Balance.', '🚫');
             const method = appConfig.paymentMethods.find(m => m.id === methodId);
-            if(amt < method.minAmount) return showModal('Error', `Minimum withdrawal amount is ${method.minAmount} Pts`, '📉');
+            if(amt < method.minAmount) return showModal('Denied', `Minimum threshold is ${method.minAmount} Pts`, '📉');
 
             try {
+                const btn = this; btn.innerText = "Processing..."; btn.disabled = true;
                 await db.runTransaction(async (t) => {
                      const ref = db.collection('users').doc(dbUser.userId);
                      t.update(ref, { balance: firebase.firestore.FieldValue.increment(-amt) });
-                     
                      const wRef = db.collection('withdrawals').doc();
                      t.set(wRef, {
-                         userId: dbUser.userId,
-                         amount: amt,
-                         paymentAddress: addr,
-                         paymentMethodName: method.name,
-                         status: 'Pending',
+                         userId: dbUser.userId, amount: amt, paymentAddress: addr,
+                         paymentMethodName: method.name, status: 'Pending',
                          createdAt: firebase.firestore.FieldValue.serverTimestamp()
                      });
                 });
-                
-                showModal('Processing', 'Your withdrawal has been requested successfully!', '✅');
+                showModal('Vault Update', 'Withdrawal requested successfully!', '🏦');
                 document.getElementById('withdrawAmountInput').value = '';
-                renderHistory(); // Refresh history list
-                
-                // Notify via Bot
-                if(appConfig.botToken) {
-                    const msg = `⏳ <b>উইথড্র রিকোয়েস্ট!</b>\nআপনার ${amt} পয়েন্ট উইথড্র রিকোয়েস্ট গ্রহণ করা হয়েছে।\nMethod: ${method.name}\nখুব শীঘ্রই অ্যাডমিন এটি অ্যাপ্রুভ করবেন।`;
-                    notifyBot(dbUser.userId, msg);
-                }
-            } catch(e) {
-                showModal('Error', 'Transaction failed to process.', '❌');
-            }
-        };
-        
-        // --- Copy & Share Links ---
-        document.getElementById('btnCopyRef').onclick = function() {
-            const txt = document.getElementById('referLinkBox').innerText;
-            navigator.clipboard.writeText(txt);
-            showModal('Copied', 'Referral link copied to your clipboard!', '📋');
-        };
-        
-        document.getElementById('btnShareRef').onclick = function() {
-             const txt = document.getElementById('referLinkBox').innerText;
-             tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(txt)}&text=Join Free Cash & Earn Real Money today! 🚀`);
+                renderHistory();
+                btn.innerText = "Process Withdrawal"; btn.disabled = false;
+            } catch(e) { showModal('Error', 'Transaction failed.', '❌'); }
         };
 
-        // --- Modals Logic ---
-        function showModal(title, msg, icon = '🎉') {
+        // --- SHARES ---
+        document.getElementById('btnCopyRef').onclick = () => {
+            navigator.clipboard.writeText(document.getElementById('referLinkBox').innerText);
+            showModal('Copied', 'Elite invite link copied!', '📋');
+        };
+        document.getElementById('btnShareRef').onclick = () => {
+            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(document.getElementById('referLinkBox').innerText)}&text=Join Premium Cash & Earn Real Crypto! 👑`);
+        };
+
+        // --- MODAL UI ---
+        function showModal(title, msg, icon) {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalMsg').innerText = msg;
             document.getElementById('modalIcon').innerText = icon;
@@ -1408,15 +1076,13 @@
             setTimeout(() => box.classList.add('show'), 10);
             tg.HapticFeedback.notificationOccurred('success');
         }
-
         function closeModal() {
-            const modal = document.getElementById('customModal');
             const box = document.getElementById('modalBox');
             box.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
+            setTimeout(() => document.getElementById('customModal').style.display = 'none', 400);
         }
 
-        // --- APP INITIALIZATION ---
+        // --- INIT APP ---
         async function fetchConfig() {
             const doc = await db.collection('config').doc('appConfig').get();
             if(doc.exists) {
@@ -1430,71 +1096,36 @@
         if(tgUser) {
             const userId = String(tgUser.id);
             
-            // Listen to Realtime User Data changes
             db.collection('users').doc(userId).onSnapshot(doc => {
                 if(doc.exists) {
                     const data = doc.data();
-                    
-                    // Daily Energy Refill Logic
                     if(data.lastActiveDate !== new Date().toDateString()) {
-                        db.collection('users').doc(userId).update({
-                            energy: MAX_ENERGY,
-                            lastActiveDate: new Date().toDateString()
-                        });
-                        return; // Snapshot will re-trigger
+                        db.collection('users').doc(userId).update({ energy: MAX_ENERGY, lastActiveDate: new Date().toDateString() });
+                        return;
                     }
-
-                    dbUser = data;
-                    refreshUI(); // Update screen with new data safely
+                    dbUser = data; refreshUI();
                 } else {
-                    // Register New User
                     const newUser = {
-                        userId: userId,
-                        first_name: tgUser.first_name,
-                        last_name: tgUser.last_name || '',
-                        username: tgUser.username || '',
-                        photo_url: tgUser.photo_url || '',
-                        balance: 0,
-                        totalEarnings: 0,
-                        totalTasksCompleted: 0,
-                        energy: MAX_ENERGY,
-                        lastActiveDate: new Date().toDateString(),
-                        referredUsersCount: 0,
-                        claimedMilestones: [],
+                        userId: userId, first_name: tgUser.first_name, last_name: tgUser.last_name || '',
+                        photo_url: tgUser.photo_url || '', balance: 0, totalEarnings: 0, totalTasksCompleted: 0,
+                        energy: MAX_ENERGY, lastActiveDate: new Date().toDateString(), referredUsersCount: 0,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
-                    
-                    // Handle Referral Setup
                     const startParam = tg.initDataUnsafe.start_param;
                     if(startParam && startParam.startsWith('ref_')) {
                         newUser.referredBy = startParam.split('_')[1];
-                        
                         if(newUser.referredBy !== userId) {
-                            // Update the person who referred them
-                            db.collection('users').doc(newUser.referredBy).update({
-                                referredUsersCount: firebase.firestore.FieldValue.increment(1)
-                            });
-                            
-                            // Send Bot Notification to the Referrer
-                            if(appConfig && appConfig.botToken) {
-                                const msg = `🎉 <b>নতুন রেফারেল!</b>\nআপনার রেফার লিংক ব্যবহার করে নতুন একজন জয়েন করেছে। আপনার টার্গেট চেক করুন!`;
-                                notifyBot(newUser.referredBy, msg);
-                            }
+                            db.collection('users').doc(newUser.referredBy).update({ referredUsersCount: firebase.firestore.FieldValue.increment(1) });
                         }
                     }
-                    
                     db.collection('users').doc(userId).set(newUser);
                 }
             });
-            
-            // Start fetching app configuration
             fetchConfig();
-            
+            startFakeLiveActivity(); 
         } else {
-            // Failsafe if not opened in Telegram
-            document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Please open this app inside Telegram</h2>";
+            document.body.innerHTML = "<h2 style='color:var(--gold-primary);text-align:center;margin-top:50px;'>Please open inside Telegram 👑</h2>";
         }
-
     </script>
 </body>
 </html>
