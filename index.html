@@ -234,11 +234,12 @@
 
         .btn-sm { 
             padding: 6px 14px; 
-            font-size: 11px; 
+            font-size: 12px; 
             border-radius: 20px; 
             font-weight: 700; 
             border: none; 
             cursor: pointer; 
+            transition: 0.3s;
         }
 
         /* --- Floating Animation (Optimistic UI Effect) --- */
@@ -528,6 +529,25 @@
             transform: scale(1); opacity: 1; 
         }
 
+        /* Premium Banner Added Style */
+        .premium-ad-banner {
+            background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+            border-radius: 18px;
+            padding: 2px;
+            margin-bottom: 18px;
+            box-shadow: 0 5px 25px rgba(255, 215, 0, 0.2);
+        }
+
+        .premium-ad-inner {
+            background: rgba(36, 11, 54, 0.95);
+            border-radius: 16px;
+            padding: 22px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
@@ -604,29 +624,20 @@
         </div>
 
         <div id="adsPage" class="page">
-            <div class="glass-card">
-                <div class="card-header"><span class="card-icon">📺</span> <h2>Watch & Earn</h2></div>
-                
-                <div class="task-item">
-                    <div class="task-left">
-                        <div class="task-icon">⚡</div>
-                        <div class="task-meta">
-                            <h4>Standard Ad</h4>
-                            <span>+<span id="adPointsStd">10</span> Pts (Cost: 10⚡)</span>
+            
+            <div class="premium-ad-banner">
+                <div class="premium-ad-inner">
+                    <div style="font-size: 45px; margin-bottom: 8px; filter: drop-shadow(0 0 15px rgba(255,215,0,0.5));">📺</div>
+                    <h3 style="color: var(--gold-primary); margin-bottom: 5px; font-size: 22px;">Watch & Earn</h3>
+                    <p style="color: var(--text-lavender); font-size: 13px; margin-bottom: 18px;">Watch a short sponsored video to instantly claim your points!</p>
+                    
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; background: rgba(0,0,0,0.4); padding: 12px 18px; border-radius: 14px; border: 1px solid var(--glass-border);">
+                        <div style="text-align: left;">
+                            <div style="color: var(--neon-green); font-weight: 800; font-size: 16px;">+<span id="adPointsStd">100</span> Pts</div>
+                            <div style="color: var(--text-muted); font-size: 11px;">Cost: 10⚡</div>
                         </div>
+                        <button class="btn-sm btn-gold" id="btnStandardAd" style="padding: 10px 24px; font-size: 14px;">Watch Video</button>
                     </div>
-                    <button class="btn-sm btn-gold" id="btnStandardAd">Watch</button>
-                </div>
-
-                <div class="task-item" style="border-color:var(--gold-primary); background:rgba(255, 215, 0, 0.05);">
-                    <div class="task-left">
-                        <div class="task-icon" style="background:var(--gold-primary); color:black;">💎</div>
-                        <div class="task-meta">
-                            <h4 style="color:var(--gold-primary);">Premium Ad</h4>
-                            <span>+<span id="adPointsBonus">20</span> Pts (Cost: 15⚡)</span>
-                        </div>
-                    </div>
-                    <button class="btn-sm btn-gold" id="btnBonusAd">Claim</button>
                 </div>
             </div>
 
@@ -818,6 +829,10 @@
         let unsyncedPoints = 0;
         let unsyncedEnergyUsed = 0;
         const MAX_ENERGY = 100;
+        
+        // Window Objects for task states so they survive re-renders
+        window.activeCountdowns = window.activeCountdowns || {};
+        window.claimableTasks = window.claimableTasks || {};
 
         // --- Core Utils ---
         function formatNumber(num) {
@@ -856,7 +871,6 @@
             const pointsToSync = unsyncedPoints;
             const energyToSync = unsyncedEnergyUsed;
             
-            // Reset trackers to avoid double counting
             unsyncedPoints = 0; 
             unsyncedEnergyUsed = 0;
 
@@ -867,20 +881,14 @@
                     energy: firebase.firestore.FieldValue.increment(-energyToSync)
                 });
             } catch(e) {
-                // Restore values if transaction fails
                 unsyncedPoints += pointsToSync;
                 unsyncedEnergyUsed += energyToSync;
                 console.error("Sync failed:", e);
             }
         }
         
-        // Setup Auto Sync Interval (Every 20 Seconds)
         setInterval(syncWithServer, 20000);
-        
-        // Sync when user closes or leaves the web app
-        window.addEventListener('beforeunload', () => { 
-            syncWithServer(); 
-        });
+        window.addEventListener('beforeunload', () => { syncWithServer(); });
 
         // *** CURRENCY DISPLAY LOGIC ***
         function updateCurrencyDisplay() {
@@ -917,40 +925,32 @@
         function refreshUI() {
             if(!dbUser || !appConfig) return;
             
-            // Apply optimistic data
             localBalance = dbUser.balance + unsyncedPoints;
             localEnergy = (dbUser.energy !== undefined ? dbUser.energy : MAX_ENERGY) - unsyncedEnergyUsed;
             
             const fullName = `${dbUser.first_name} ${dbUser.last_name || ''}`.trim();
             const avatarUrl = dbUser.photo_url || "https://placehold.co/100x100/240b36/FFD700?text=U";
             
-            // Update Header & Energy Bar
             document.getElementById('headerName').innerText = fullName.substring(0, 12);
             document.getElementById('headerBalance').innerText = formatNumber(localBalance);
             document.getElementById('headerEnergyBar').style.width = `${(localEnergy/MAX_ENERGY)*100}%`;
             document.getElementById('headerAvatar').src = avatarUrl;
             
-            // Update Profile Page Data
             document.getElementById('profilePageName').innerText = fullName;
             document.getElementById('profilePageAvatar').src = avatarUrl;
 
-            // Update Home Stats Grid
             document.getElementById('statsEnergy').innerText = `${localEnergy}/${MAX_ENERGY}`;
             document.getElementById('statsTotalEarn').innerText = formatNumber((dbUser.totalEarnings || 0) + unsyncedPoints);
             document.getElementById('statsRefers').innerText = dbUser.referredUsersCount || 0;
             document.getElementById('statsTotalViews').innerText = dbUser.totalTasksCompleted || 0;
 
-            // Update Ads Page Points Display
-            document.getElementById('adPointsStd').innerText = appConfig.standardAdPoints || 10;
-            document.getElementById('adPointsBonus').innerText = appConfig.bonusAdPoints || 20;
+            document.getElementById('adPointsStd').innerText = appConfig.standardAdPoints || 100;
             
-            // Update Withdraw Page Balance & Rates
             document.getElementById('withdrawBalanceDisplay').innerText = formatNumber(localBalance);
             const rateUSD = appConfig.dollarExchangeRate || 10000;
             document.getElementById('dynamicPriceText').innerText = `Exchange Rate: ${rateUSD} Pts = $1.00 USD`;
             updateCurrencyDisplay(); 
 
-            // Render Dynamic Sections
             renderMilestoneOnHome();
             renderMilestones();
             renderMethods();
@@ -958,12 +958,10 @@
             renderDynamicTasks();
             renderSupport();
             
-            // Generate Referral Link
             const link = `https://t.me/${BOT_USERNAME}/${SHORT_NAME}?startapp=ref_${dbUser.userId}`;
             document.getElementById('referLinkBox').innerText = link;
         }
 
-        // --- NEW: Home Page Milestone Tracker ---
         function renderMilestoneOnHome() {
             const container = document.getElementById('milestoneContent');
             if(!appConfig.milestones || appConfig.milestones.length === 0) {
@@ -974,7 +972,6 @@
             const refs = dbUser.referredUsersCount || 0;
             const claimed = dbUser.claimedMilestones || [];
             
-            // Determine the next un-claimed milestone
             const nextMilestone = appConfig.milestones.find(m => !claimed.includes(m.required)) || appConfig.milestones[appConfig.milestones.length - 1];
             const isAllClaimed = claimed.includes(nextMilestone.required);
 
@@ -1006,7 +1003,6 @@
             `;
         }
 
-        // --- Profile Page Full Milestones List ---
         function renderMilestones() {
             const div = document.getElementById('milestoneList');
             div.innerHTML = '';
@@ -1046,7 +1042,7 @@
         }
 
         async function claimMilestone(target, reward) {
-            await syncWithServer(); // Sync local points before making a direct DB claim
+            await syncWithServer(); 
             const ref = db.collection('users').doc(dbUser.userId);
             try {
                 await ref.update({
@@ -1056,7 +1052,6 @@
                 
                 showModal('Claimed!', `Bonus ${reward} points added to your balance.`, '💰');
                 
-                // Bot Notification
                 if(appConfig.botToken) {
                     const msg = `🎉 <b>অভিনন্দন!</b>\nআপনি ${target} টি রেফার টার্গেট পূরণ করেছেন এবং <b>${reward} পয়েন্ট</b> বোনাস পেয়েছেন!\n\nKeep sharing your link! 🚀`;
                     notifyBot(dbUser.userId, msg);
@@ -1066,14 +1061,12 @@
             }
         }
 
-        // --- Leaderboard Logic (With Caching to save reads) ---
         async function loadLeaderboardCached() {
             const list = document.getElementById('leaderboardList');
             const cacheData = localStorage.getItem('lb_data');
             const cacheTime = localStorage.getItem('lb_time');
             const now = Date.now();
 
-            // Cache valid for 24 hours
             if(cacheData && cacheTime && (now - cacheTime < 86400000)) {
                 renderLeaderboardHTML(JSON.parse(cacheData));
                 return;
@@ -1119,78 +1112,126 @@
             });
         }
 
-        // --- Dynamic Tasks Logic (Bug Fixed) ---
+        // --- NEW Dynamic Tasks Logic (Countdown on Button + Claim + Auto Reset) ---
         function renderDynamicTasks() {
             const div = document.getElementById('dynamicTasksList');
             div.innerHTML = '';
             
             appConfig.dynamicTasks?.forEach(task => {
                 const today = new Date().toDateString();
+                // Check if completed today. This natively handles midnight resets.
                 const isDone = (dbUser.completedTasks?.[task.id] === today) || (task.type === 'one-time' && dbUser.completedTasks?.[task.id] === 'completed');
                 
+                const countdown = window.activeCountdowns[task.id];
+                const isClaimable = window.claimableTasks[task.id];
+                
+                let btnHTML = '';
+                
+                if (isDone) {
+                    btnHTML = `<button class="btn-sm btn-glass" style="opacity:0.5; color: var(--neon-green); border-color: var(--neon-green);" disabled>Completed</button>`;
+                } else if (isClaimable) {
+                    btnHTML = `<button class="btn-sm btn-gold" id="taskBtn_${task.id}" onclick="claimTask(event, '${task.id}')">Claim</button>`;
+                } else if (countdown > 0) {
+                    btnHTML = `<button class="btn-sm btn-glass" id="taskBtn_${task.id}" disabled>${countdown}s</button>`;
+                } else {
+                    btnHTML = `<button class="btn-sm btn-glass" id="taskBtn_${task.id}" onclick="startTask('${task.id}')">Join</button>`;
+                }
+
                 div.innerHTML += `
                  <div class="task-item">
                      <div class="task-left">
-                         <div class="task-icon" style="background:#333; color:white;">🔗</div>
+                         <div class="task-icon" style="background:rgba(255,255,255,0.05); color:var(--text-lavender);">🔗</div>
                          <div class="task-meta">
                              <h4>${task.name}</h4>
                              <span>+${task.points} Pts (Cost: 5⚡)</span>
                          </div>
                      </div>
-                     <button class="btn-sm btn-glass" id="taskBtn_${task.id}" onclick="doTask(event, '${task.id}')" ${isDone ? 'disabled style="opacity:0.5"' : ''}>
-                        ${isDone ? 'Done' : 'Go'}
-                     </button>
+                     ${btnHTML}
                  </div>`;
             });
         }
 
-        async function doTask(event, taskId) {
+        function startTask(taskId) {
+            const task = appConfig.dynamicTasks.find(t => t.id === taskId);
+            const cost = 5;
+            if(localEnergy < cost) {
+                return showModal('Low Energy', `You need ${cost}⚡ to start this task. Please wait for refill.`, '⚡');
+            }
+
+            // Open Link silently, NO popups
+            tg.openLink(task.link);
+
+            let timeLeft = task.timer || 10;
+            window.activeCountdowns[taskId] = timeLeft;
+
+            const btn = document.getElementById(`taskBtn_${taskId}`);
+            if(btn) {
+                btn.disabled = true;
+                btn.innerText = `${timeLeft}s`;
+            }
+
+            const timerInterval = setInterval(() => {
+                window.activeCountdowns[taskId]--;
+                const currentBtn = document.getElementById(`taskBtn_${taskId}`);
+                
+                if(currentBtn && window.activeCountdowns[taskId] > 0) {
+                    currentBtn.innerText = `${window.activeCountdowns[taskId]}s`;
+                }
+
+                if(window.activeCountdowns[taskId] <= 0) {
+                    clearInterval(timerInterval);
+                    delete window.activeCountdowns[taskId];
+                    window.claimableTasks[taskId] = true;
+                    
+                    if(currentBtn) {
+                        currentBtn.disabled = false;
+                        currentBtn.innerText = "Claim";
+                        currentBtn.className = "btn-sm btn-gold";
+                        currentBtn.onclick = (e) => claimTask(e, taskId);
+                    }
+                }
+            }, 1000);
+        }
+
+        async function claimTask(event, taskId) {
             const task = appConfig.dynamicTasks.find(t => t.id === taskId);
             if(!task) return;
             
             const cost = 5;
-            if(localEnergy < cost) {
-                return showModal('Low Energy', `You need ${cost}⚡ to do this task. Please wait for refill.`, '⚡');
-            }
-
-            // Immediately disable button to prevent multi-clicking
-            const btn = document.getElementById(`taskBtn_${taskId}`);
-            btn.disabled = true;
-            btn.innerText = "⏳ Wait";
-
-            tg.openLink(task.link);
-            showModal('Wait...', `Please stay on the page for ${task.timer || 10} seconds to claim.`, '⏳');
             
-            setTimeout(async () => {
-                // Apply Optimistic Reward Locally First
-                localEnergy -= cost;
-                localBalance += task.points;
-                unsyncedEnergyUsed += cost;
-                unsyncedPoints += task.points;
-                
-                showFloatingText(`+${task.points}`, event.clientX, event.clientY);
-                tg.HapticFeedback.impactOccurred('medium');
-                
-                // Ensure immediate DB update for task status so it can't be repeated
-                const ref = db.collection('users').doc(dbUser.userId);
-                const today = new Date().toDateString();
-                const taskStatus = task.type === 'one-time' ? 'completed' : today;
-                
-                // Update local dbUser object to reflect change instantly
-                if(!dbUser.completedTasks) dbUser.completedTasks = {};
-                dbUser.completedTasks[taskId] = taskStatus;
+            // Remove from claimable state immediately
+            delete window.claimableTasks[taskId];
 
+            // Apply Optimistic Reward Locally
+            localEnergy -= cost;
+            localBalance += task.points;
+            unsyncedEnergyUsed += cost;
+            unsyncedPoints += task.points;
+            
+            showFloatingText(`+${task.points}`, event.clientX, event.clientY);
+            tg.HapticFeedback.impactOccurred('medium');
+            
+            // Database update
+            const ref = db.collection('users').doc(dbUser.userId);
+            const today = new Date().toDateString();
+            const taskStatus = task.type === 'one-time' ? 'completed' : today;
+            
+            if(!dbUser.completedTasks) dbUser.completedTasks = {};
+            dbUser.completedTasks[taskId] = taskStatus;
+
+            try {
                 await ref.update({
                     [`completedTasks.${taskId}`]: taskStatus,
                     totalTasksCompleted: firebase.firestore.FieldValue.increment(1)
                 });
-                
-                showModal('Done', `Task Completed! You earned ${task.points} points.`, '✅');
-                refreshUI(); // Re-render tasks and header
-            }, (task.timer || 10) * 1000);
+            } catch(e) { console.log(e); }
+            
+            // Only show popup upon successful claim
+            showModal('Awesome!', `You successfully claimed ${task.points} points.`, '🎁');
+            refreshUI(); 
         }
 
-        // --- Ad Buttons & Monetag Logic ---
+        // --- Ad Buttons Logic ---
         function loadMonetag(zoneId) {
              const script = document.createElement('script');
              script.src = '//libtl.com/sdk.js';
@@ -1230,13 +1271,12 @@
                 
                 if(duration < 10000) { 
                     showModal('Failed', 'You closed the ad too early! Minimum 10 seconds required.', '⚠️');
-                    btn.innerText = 'Watch';
+                    btn.innerText = 'Watch Video';
                     btn.disabled = false;
                     return; 
                 }
 
-                // Apply Optimistic Reward
-                const reward = appConfig.standardAdPoints || 10;
+                const reward = appConfig.standardAdPoints || 100;
                 localEnergy -= cost;
                 localBalance += reward;
                 unsyncedEnergyUsed += cost;
@@ -1246,44 +1286,14 @@
                 tg.HapticFeedback.impactOccurred('medium');
                 refreshUI();
                 
-                btn.innerText = 'Watch';
+                btn.innerText = 'Watch Video';
                 btn.disabled = false;
             } catch(e) {
                 console.log(e);
                 showModal('Error', 'Ad failed to load properly.', '❌');
-                btn.innerText = 'Watch';
+                btn.innerText = 'Watch Video';
                 btn.disabled = false;
             }
-        };
-
-        document.getElementById('btnBonusAd').onclick = async function(event) {
-            const cost = 15;
-            if(localEnergy < cost) {
-                return showModal('Low Energy', `You need ${cost}⚡ to claim this premium ad.`, '⚡');
-            }
-            
-            const btn = this;
-            btn.innerText = '...';
-            btn.disabled = true;
-
-            try {
-                await showAd('pop');
-                
-                // Apply Optimistic Reward
-                const reward = appConfig.bonusAdPoints || 20;
-                localEnergy -= cost;
-                localBalance += reward;
-                unsyncedEnergyUsed += cost;
-                unsyncedPoints += reward;
-                
-                showFloatingText(`+${reward}`, event.clientX, event.clientY);
-                tg.HapticFeedback.impactOccurred('medium');
-                refreshUI();
-            } catch(e) {
-                showModal('Error', 'Bonus ad unavailable at the moment.', '❌');
-            }
-            btn.innerText = 'Claim';
-            btn.disabled = false;
         };
 
         // --- Helper Lists Logic ---
@@ -1306,7 +1316,7 @@
             
             snap.forEach(doc => {
                 const d = doc.data();
-                let color = '#FFD700'; // Pending
+                let color = '#FFD700'; 
                 if(d.status === 'Approved') color = '#00e676';
                 if(d.status === 'Rejected') color = '#ff4757';
                 
@@ -1338,7 +1348,7 @@
 
         // --- Withdraw Logic ---
         document.getElementById('btnSubmitWithdraw').onclick = async function() {
-            await syncWithServer(); // Push optimistic points before checking balance
+            await syncWithServer(); 
             
             const amt = parseInt(document.getElementById('withdrawAmountInput').value);
             const addr = document.getElementById('withdrawAddress').value;
@@ -1346,7 +1356,6 @@
             
             if(!amt || !addr) return showModal('Error', 'Please fill all the fields.', '⚠️');
             
-            // Re-fetch latest balance from DB to be ultra-safe for withdrawals
             const doc = await db.collection('users').doc(dbUser.userId).get();
             const realBalance = doc.data().balance;
 
@@ -1373,9 +1382,8 @@
                 
                 showModal('Processing', 'Your withdrawal has been requested successfully!', '✅');
                 document.getElementById('withdrawAmountInput').value = '';
-                renderHistory(); // Refresh history list
+                renderHistory(); 
                 
-                // Notify via Bot
                 if(appConfig.botToken) {
                     const msg = `⏳ <b>উইথড্র রিকোয়েস্ট!</b>\nআপনার ${amt} পয়েন্ট উইথড্র রিকোয়েস্ট গ্রহণ করা হয়েছে।\nMethod: ${method.name}\nখুব শীঘ্রই অ্যাডমিন এটি অ্যাপ্রুভ করবেন।`;
                     notifyBot(dbUser.userId, msg);
@@ -1430,24 +1438,21 @@
         if(tgUser) {
             const userId = String(tgUser.id);
             
-            // Listen to Realtime User Data changes
             db.collection('users').doc(userId).onSnapshot(doc => {
                 if(doc.exists) {
                     const data = doc.data();
                     
-                    // Daily Energy Refill Logic
                     if(data.lastActiveDate !== new Date().toDateString()) {
                         db.collection('users').doc(userId).update({
                             energy: MAX_ENERGY,
                             lastActiveDate: new Date().toDateString()
                         });
-                        return; // Snapshot will re-trigger
+                        return; 
                     }
 
                     dbUser = data;
-                    refreshUI(); // Update screen with new data safely
+                    refreshUI(); 
                 } else {
-                    // Register New User
                     const newUser = {
                         userId: userId,
                         first_name: tgUser.first_name,
@@ -1464,18 +1469,15 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
                     
-                    // Handle Referral Setup
                     const startParam = tg.initDataUnsafe.start_param;
                     if(startParam && startParam.startsWith('ref_')) {
                         newUser.referredBy = startParam.split('_')[1];
                         
                         if(newUser.referredBy !== userId) {
-                            // Update the person who referred them
                             db.collection('users').doc(newUser.referredBy).update({
                                 referredUsersCount: firebase.firestore.FieldValue.increment(1)
                             });
                             
-                            // Send Bot Notification to the Referrer
                             if(appConfig && appConfig.botToken) {
                                 const msg = `🎉 <b>নতুন রেফারেল!</b>\nআপনার রেফার লিংক ব্যবহার করে নতুন একজন জয়েন করেছে। আপনার টার্গেট চেক করুন!`;
                                 notifyBot(newUser.referredBy, msg);
@@ -1487,11 +1489,9 @@
                 }
             });
             
-            // Start fetching app configuration
             fetchConfig();
             
         } else {
-            // Failsafe if not opened in Telegram
             document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Please open this app inside Telegram</h2>";
         }
 
